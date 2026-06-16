@@ -4,12 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Threading;
+using System.Linq.Expressions;
 
 namespace Group5Project
 {
     internal class Program
     {
-        static (string, bool) Login(List<string> UserInfo, string CurrentUser, bool UserLogin)
+        static bool isRunning = true;
+        static (string, bool, bool) Login(List<string> UserInfo, string CurrentUser, bool UserLogin, bool LoginMenu)
         {
             while (true)
             {
@@ -25,7 +28,7 @@ namespace Group5Project
 
                     if (InputUsername == parts[0] && InputPassword == parts[1])
                     {
-                        return (CurrentUser, UserLogin);
+                        return (CurrentUser, true, false);
                     }
                 }
 
@@ -76,7 +79,7 @@ namespace Group5Project
                     Console.ReadKey();
                     Console.Clear();
 
-                    string NewUserInfo = $"\n{InputUsername},{InputPassword}";
+                    string NewUserInfo = $"\n{InputUsername},{InputPassword},1";
                     File.AppendAllText("User_Info.txt", NewUserInfo);
 
                     return File.ReadAllLines("User_Info.txt").ToList();
@@ -90,14 +93,51 @@ namespace Group5Project
                 }
             }
         }
+        static List<string> SaveProgress(List<string> UserInfo, string CurrentUser, int CurrentLevel)
+        {
+            for (int i = 0; i < UserInfo.Count; i++)
+            {
+                string[] parts = UserInfo[i].Split(',');
+
+                if (CurrentUser == parts[0])
+                {
+                    UserInfo[i] = $"{parts[0]},{parts[1]},{CurrentLevel}";
+                    break;
+                }
+            }
+
+            File.WriteAllLines("User_Info.txt", UserInfo);
+            Console.WriteLine("Progress saved successfully!");
+            return UserInfo;
+        }
+        static void Game(List<string> DisasterInfo)
+        {
+            Random Random = new Random();
+            List<string> UsedDisasters = new List<string>();
+
+            for (int i = 0; i < 3; i++)
+            {
+                int RandomIndex;
+
+                do
+                {
+                    RandomIndex = Random.Next(0, DisasterInfo.Count);
+                }
+                while (UsedDisasters.Contains(RandomIndex));
+                {
+                    UsedDisasters.Add(RandomIndex);
+                }
+            }
+        }
         static void Main(string[] args)
         {
             List<string> UserInfo = File.ReadAllLines("User_Info.txt").ToList();
-            bool MainMenu = true;
+            List<string> DisasterInfo = File.ReadAllLines("Disaster_Info.txt").ToList();
+            bool LoginMenu = true;
             bool UserLogin = false;
             string CurrentUser = "";
 
-            while (MainMenu)
+            while (LoginMenu)
             {
                 Console.WriteLine("[1] Login");
                 Console.WriteLine("[2] Register");
@@ -113,7 +153,7 @@ namespace Group5Project
                 {
                     case 1:
                         Console.Clear();
-                        (CurrentUser, UserLogin) = Login(UserInfo, CurrentUser, UserLogin);
+                        (CurrentUser, UserLogin, LoginMenu) = Login(UserInfo, CurrentUser, UserLogin, LoginMenu);
                         break;
                     case 2:
                         Console.Clear();
@@ -121,7 +161,41 @@ namespace Group5Project
                         break;
                     case 3:
                         Console.Clear();
-                        MainMenu = false;
+                        LoginMenu = false;
+                        break;
+                    default:
+                        Console.WriteLine();
+                        Console.WriteLine("Enter A Valid Choice! Try Again.");
+                        Console.WriteLine("Press Any Key To Try Again.");
+                        Console.ReadKey();
+                        Console.Clear();
+                        break;
+                }
+            }
+
+            while (UserLogin)
+            {
+                Console.WriteLine("[1] Load Game");
+                Console.WriteLine("[2] New Game");
+                Console.WriteLine("[3] Logout");
+                Console.WriteLine();
+
+                Console.Write("Choice: ");
+                string Input = Console.ReadLine();
+
+                int.TryParse(Input, out int MenuChoice);
+
+                switch (MenuChoice)
+                {
+                    case 1:
+                        Console.Clear();
+                        Game(DisasterInfo);
+                        break;
+                    case 2:
+                        break;
+                    case 3:
+                        LoginMenu = true;
+                        UserLogin = false;
                         break;
                     default:
                         Console.WriteLine();
