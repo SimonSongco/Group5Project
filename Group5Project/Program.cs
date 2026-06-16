@@ -105,7 +105,9 @@ namespace Group5Project
                 Console.WriteLine();
 
                 Console.Write("Choice: ");
-                int MenuChoice = Convert.ToInt32(Console.ReadLine());
+                string Input = Console.ReadLine();
+
+                int.TryParse(Input, out int MenuChoice);
 
                 switch (MenuChoice)
                 {
@@ -122,11 +124,16 @@ namespace Group5Project
                         MainMenu = false;
                         break;
                     default:
+                        Console.WriteLine();
+                        Console.WriteLine("Enter A Valid Choice! Try Again.");
+                        Console.WriteLine("Press Any Key To Try Again.");
+                        Console.ReadKey();
+                        Console.Clear();
                         break;
                 }
             }
 
-            Console.WriteLine("Login DONE!!!");
+            Console.WriteLine("Went Out Of Main Menu!");
             Console.ReadKey();
         }
     }
