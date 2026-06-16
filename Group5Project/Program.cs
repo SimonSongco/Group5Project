@@ -55,6 +55,7 @@ namespace Group5Project
                         Console.WriteLine("Username Already Taken!");
                         Console.WriteLine("Press Any Key To Try Again.");
                         Console.ReadKey();
+                        Console.Clear();
                         UsernameTaken = true;
                         break;
                     }
@@ -73,6 +74,7 @@ namespace Group5Project
                     Console.WriteLine("Account Created!");
                     Console.WriteLine("Press Any Key To Go Back!");
                     Console.ReadKey();
+                    Console.Clear();
 
                     string NewUserInfo = $"\n{InputUsername},{InputPassword}";
                     File.AppendAllText("User_Info.txt", NewUserInfo);
@@ -84,27 +86,44 @@ namespace Group5Project
                     Console.WriteLine("Credentials Not Valid!");
                     Console.WriteLine("Press Any Key To Try Again.");
                     Console.ReadKey();
+                    Console.Clear();
                 }
             }
         }
         static void Main(string[] args)
         {
             List<string> UserInfo = File.ReadAllLines("User_Info.txt").ToList();
+            bool MainMenu = true;
             bool UserLogin = false;
             string CurrentUser = "";
 
-            int MenuChoice = Convert.ToInt32(Console.ReadLine());
-
-            switch (MenuChoice)
+            while (MainMenu)
             {
-                case 1:
-                    (CurrentUser, UserLogin) = Login(UserInfo, CurrentUser, UserLogin);
-                    break;
-                case 2:
-                    UserInfo = Register(UserInfo);
-                    break;
-                default:
-                    break;
+                Console.WriteLine("[1] Login");
+                Console.WriteLine("[2] Register");
+                Console.WriteLine("[3] Exit");
+                Console.WriteLine();
+
+                Console.Write("Choice: ");
+                int MenuChoice = Convert.ToInt32(Console.ReadLine());
+
+                switch (MenuChoice)
+                {
+                    case 1:
+                        Console.Clear();
+                        (CurrentUser, UserLogin) = Login(UserInfo, CurrentUser, UserLogin);
+                        break;
+                    case 2:
+                        Console.Clear();
+                        UserInfo = Register(UserInfo);
+                        break;
+                    case 3:
+                        Console.Clear();
+                        MainMenu = false;
+                        break;
+                    default:
+                        break;
+                }
             }
 
             Console.WriteLine("Login DONE!!!");
