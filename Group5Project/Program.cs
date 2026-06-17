@@ -14,6 +14,7 @@ namespace Group5Project
         static List<string> UserInfo = new List<string>();
         static List<string> DisasterInfo = new List<string>();
         static string CurrentUser = "";
+        static int TargetUserLevel = 1;
 
         static (string, bool, bool) Login(bool UserLogin, bool LoginMenu)
         {
@@ -123,11 +124,50 @@ namespace Group5Project
 
             return CurrentDisasters;
         }
+        static void NewGame()
+        {
+            Console.Clear();
+            Console.WriteLine("=== WARNING: START NEW GAME ===");
+            Console.WriteLine("This will overwrite your existing level and progress.");
+            Console.Write("Are you sure you want to start a New Game? (Y/N): ");
+            string ConfirmInput = Console.ReadLine().Trim().ToUpper();
+
+            if (ConfirmInput == "Y")
+            {
+                for (int i = 0; i < UserInfo.Count; i++)
+                {
+                    string[] parts = UserInfo[i].Split('|');
+                    if (parts[0] == CurrentUser)
+                    {
+                        string ResetUserLine = $"{parts[0]}|{parts[1]}|1";
+                        UserInfo[i] = ResetUserLine;
+                        break;
+                    }
+                }
+
+                File.WriteAllLines("User_Info.txt", UserInfo);
+                TargetUserLevel = 1;
+
+                Console.WriteLine("\nProgress reset! Loading Level 1...");
+                Thread.Sleep(1000);
+                Console.Clear();
+
+                Game();
+            }
+            else
+            {
+                Console.WriteLine("\nAction canceled. Returning to menu...");
+                Thread.Sleep(1000);
+                Console.Clear();
+            }
+        }
         static void Game()
         {
             List<string> CurrentDisasters = new List<string>();
 
-            int TargetUserLevel = 1;
+            int CorrectAnswers = 0;
+            int TotalAnswers = 0;
+
             int UserLineIndex = -1;
 
             for (int i = 0; i < UserInfo.Count; i++)
@@ -143,7 +183,7 @@ namespace Group5Project
 
             string[] UserParts = UserInfo[UserLineIndex].Split('|');
 
-            if (TargetUserLevel <= 3)
+            if (TargetUserLevel > 3)
             {
                 Console.WriteLine("You Have Already Completed All The Levels");
                 Console.WriteLine("Press Any Key to Go Back");
@@ -198,6 +238,7 @@ namespace Group5Project
             while (CurrentDisasters.Count > 0)
             {
                 Console.Clear();
+
                 Console.WriteLine("=== EMERGENCY DISPATCH CONTROL CENTER ===");
                 Console.WriteLine($"Active Emergencies Left: {CurrentDisasters.Count}");
                 Console.WriteLine("-----------------------------------------");
@@ -249,8 +290,12 @@ namespace Group5Project
                     int correctIndex = int.Parse(CorrectUnit) - 1;
                     string CorrectUnitNames = UnitNames[correctIndex];
 
+                    TotalAnswers++;
+
                     if (UnitChoice == CorrectUnit)
                     {
+                        CorrectAnswers++;
+
                         Console.WriteLine("SUCCESS! You deployed the correct emergency response unit.");
                         Console.WriteLine("The area is secure. Removing emergency tracking card.");
 
@@ -278,25 +323,70 @@ namespace Group5Project
             if (CurrentDisasters.Count == 0)
             {
                 string[] parts = UserInfo[UserLineIndex].Split('|');
-                TargetUserLevel++;
 
-                string UpdatedUserLine = $"{parts[0]}|{parts[1]}|{TargetUserLevel}";
-                UserInfo[UserLineIndex] = UpdatedUserLine;
+                double Reputation = ((double)CorrectAnswers / TotalAnswers) * 100;
 
-                File.WriteAllLines("User_Info.txt", UserInfo);
+                int RequiredRep = 50;
+
+                if (TargetUserLevel == 2)
+                    RequiredRep = 70;
+                else if (TargetUserLevel == 3)
+                    RequiredRep = 90;
+
+                Console.Clear();
+                Console.WriteLine("=========================================");
+                Console.WriteLine("             LEVEL RESULTS");
+                Console.WriteLine("=========================================");
+                Console.WriteLine($"Correct Answers : {CorrectAnswers}");
+                Console.WriteLine($"Total Answers   : {TotalAnswers}");
+                Console.WriteLine($"Reputation      : {Reputation:F1}%");
+                Console.WriteLine($"Required        : {RequiredRep}%");
+                Console.WriteLine();
+
+                if (Reputation >= RequiredRep)
+                {
+                    TargetUserLevel++;
+
+                    string UpdatedUserLine = $"{parts[0]}|{parts[1]}|{TargetUserLevel}";
+                    UserInfo[UserLineIndex] = UpdatedUserLine;
+
+                    File.WriteAllLines("User_Info.txt", UserInfo);
+
+                    if (TargetUserLevel > 3)
+                    {
+                        Console.WriteLine("=========================================");
+                        Console.WriteLine("CONGRATULATIONS!");
+                        Console.WriteLine("YOU HAVE COMPLETED ALL LEVELS!");
+                        Console.WriteLine("=========================================");
+                        Console.WriteLine("Press Any Key To Continue...");
+                        Console.ReadKey();
+                        Console.Clear();
+                        return;
+                    }
+
+                    Console.WriteLine($"PROMOTION SUCCESSFUL!");
+                    Console.WriteLine($"You advanced to Level {TargetUserLevel}!");
+                }
+                else
+                {
+                    Console.WriteLine("PROMOTION FAILED!");
+                    Console.WriteLine("Your reputation is too low.");
+                    Console.WriteLine("You must replay the level.");
+
+                    string UpdatedUserLine = $"{parts[0]}|{parts[1]}|{TargetUserLevel}";
+                    UserInfo[UserLineIndex] = UpdatedUserLine;
+
+                    File.WriteAllLines("User_Info.txt", UserInfo);
+                }
+
+                Console.WriteLine();
+                Console.WriteLine("[1] Play Again");
+                Console.WriteLine("[2] Main Menu");
+                Console.WriteLine();
 
                 while (true)
                 {
-                    Console.Clear();
-                    Console.WriteLine("=========================================");
-                    Console.WriteLine("     MISSION COMPLETE: All sectors clear!");
-                    Console.WriteLine($"     PROMOTED! You are now Level {TargetUserLevel}!");
-                    Console.WriteLine("=========================================");
-                    Console.WriteLine("[1] Next Level (Play Again)");
-                    Console.WriteLine("[2] Main Menu");
-                    Console.WriteLine();
                     Console.Write("Choice: ");
-
                     string postGameChoice = Console.ReadLine();
 
                     if (postGameChoice == "1")
@@ -312,8 +402,7 @@ namespace Group5Project
                     }
                     else
                     {
-                        Console.WriteLine("\nInvalid choice! Press any key to try again...");
-                        Console.ReadKey();
+                        Console.WriteLine("Invalid choice!");
                     }
                 }
             }
@@ -382,6 +471,7 @@ namespace Group5Project
                         break;
                     case 2:
                         Console.Clear();
+                        NewGame();
                         break;
                     case 3:
                         Console.Clear();
