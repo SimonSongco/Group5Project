@@ -11,7 +11,6 @@ namespace Group5Project
 {
     internal class Program
     {
-        static bool isRunning = true;
         static (string, bool, bool) Login(List<string> UserInfo, string CurrentUser, bool UserLogin, bool LoginMenu)
         {
             while (true)
@@ -41,7 +40,6 @@ namespace Group5Project
         }
         static List<string> Register(List<string> UserInfo)
         {
-
             while (true)
             {
                 bool UsernameTaken = false;
@@ -66,10 +64,10 @@ namespace Group5Project
 
                 if (UsernameTaken) continue;
 
-                Console.Write("Password: "); 
+                Console.Write("Password: ");
                 string InputPassword = Console.ReadLine();
 
-                Console.Write("Confirm Password: "); 
+                Console.Write("Confirm Password: ");
                 string InputConfirmPassword = Console.ReadLine();
 
                 if (InputPassword == InputConfirmPassword)
@@ -93,40 +91,116 @@ namespace Group5Project
                 }
             }
         }
-        static List<string> SaveProgress(List<string> UserInfo, string CurrentUser, int CurrentLevel)
-        {
-            for (int i = 0; i < UserInfo.Count; i++)
-            {
-                string[] parts = UserInfo[i].Split(',');
-
-                if (CurrentUser == parts[0])
-                {
-                    UserInfo[i] = $"{parts[0]},{parts[1]},{CurrentLevel}";
-                    break;
-                }
-            }
-
-            File.WriteAllLines("User_Info.txt", UserInfo);
-            Console.WriteLine("Progress saved successfully!");
-            return UserInfo;
-        }
         static void Game(List<string> DisasterInfo)
         {
-            Random Random = new Random();
-            List<string> UsedDisasters = new List<string>();
+            Random random = new Random();
+            List<int> UsedIndexes = new List<int>();
+            List<string> CurrentDisasters = new List<string>();
 
             for (int i = 0; i < 3; i++)
             {
-                int RandomIndex;
-
+                int randomIndex;
                 do
                 {
-                    RandomIndex = Random.Next(0, DisasterInfo.Count);
+                    randomIndex = random.Next(0, DisasterInfo.Count);
                 }
-                while (UsedDisasters.Contains(RandomIndex));
+                while (UsedIndexes.Contains(randomIndex));
+
+                UsedIndexes.Add(randomIndex);
+                CurrentDisasters.Add(DisasterInfo[randomIndex]);
+            }
+
+            while (CurrentDisasters.Count > 0)
+            {
+                Console.Clear();
+                Console.WriteLine("=== EMERGENCY DISPATCH CONTROL CENTER ===");
+                Console.WriteLine($"Active Emergencies Left: {CurrentDisasters.Count}");
+                Console.WriteLine("-----------------------------------------");
+                Console.WriteLine();
+
+                for (int i = 0; i < CurrentDisasters.Count; i++)
                 {
-                    UsedDisasters.Add(RandomIndex);
+                    string[] parts = CurrentDisasters[i].Split('|');
+                    Console.WriteLine("[{0}] {1}", i + 1, parts[1]);
+                    Console.WriteLine("    Severity: {0,-6} | Location: {1}", parts[2], parts[3]);
+                    Console.WriteLine();
                 }
+
+                Console.Write("Select an emergency to respond to (or type '0' to go back to menu): ");
+                string ChoiceInput = Console.ReadLine();
+
+                if (ChoiceInput == "0")
+                {
+                    Console.WriteLine("\nReturning to menu...");
+                    Thread.Sleep(1000);
+                    Console.Clear();
+                    break;
+                }
+
+                if (int.TryParse(ChoiceInput, out int choice) && choice >= 1 && choice <= CurrentDisasters.Count)
+                {
+                    string ChosenDisaster = CurrentDisasters[choice - 1];
+                    string[] chosenParts = ChosenDisaster.Split('|');
+
+                    Console.Clear();
+                    Console.WriteLine($"---> RESPONDING TO: {chosenParts[1]} <---");
+                    Console.WriteLine($"Details: {chosenParts[4]}");
+                    Console.WriteLine("--------------------------------------------------");
+                    Console.WriteLine();
+
+                    Console.WriteLine("Choose the BEST department to dispatch:");
+                    Console.WriteLine("[1] Police");
+                    Console.WriteLine("[2] Firemen");
+                    Console.WriteLine("[3] Healthcare");
+                    Console.WriteLine("[4] First Aid");
+                    Console.WriteLine("[5] Rescue Team");
+                    Console.WriteLine();
+                    Console.Write("Your Selection (1-5): ");
+                    string UnitChoice = Console.ReadLine();
+                    Console.WriteLine();
+
+                    string CorrectUnit = chosenParts[5].Trim();
+
+                    string[] UnitNames = { "Police", "Firemen", "Healthcare", "First Aid", "Rescue Team" };
+
+                    int correctIndex = int.Parse(CorrectUnit) - 1;
+                    string CorrectUnitNames = UnitNames[correctIndex];
+
+                    if (UnitChoice == CorrectUnit)
+                    {
+                        Console.WriteLine("SUCCESS! You deployed the correct emergency response unit.");
+                        Console.WriteLine("The area is secure. Removing emergency tracking card.");
+
+                        CurrentDisasters.RemoveAt(choice - 1);
+                    }
+                    else
+                    {
+                        Console.WriteLine("FAILURE! You deployed an ineffective department.");
+                        Console.WriteLine($"The situation has deteriorated. The correct unit was: [{CorrectUnit}] {CorrectUnitNames}.");
+
+                        CurrentDisasters.RemoveAt(choice - 1);
+                    }
+
+                    Console.WriteLine();
+                    Console.WriteLine("Press any key to refresh operational status board...");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine("\nInvalid dispatch selection! Try again.");
+                    Thread.Sleep(1200);
+                }
+            }
+
+            if (CurrentDisasters.Count == 0)
+            {
+                Console.Clear();
+                Console.WriteLine("=========================================");
+                Console.WriteLine("MISSION COMPLETE: All sectors clear!");
+                Console.WriteLine("=========================================");
+                Console.WriteLine("Press any key to go back to main menu.");
+                Console.ReadKey();
+                Console.Clear();
             }
         }
         static void Main(string[] args)
@@ -175,6 +249,7 @@ namespace Group5Project
 
             while (UserLogin)
             {
+                Console.Clear();
                 Console.WriteLine("[1] Load Game");
                 Console.WriteLine("[2] New Game");
                 Console.WriteLine("[3] Logout");
@@ -192,8 +267,11 @@ namespace Group5Project
                         Game(DisasterInfo);
                         break;
                     case 2:
+                        Console.Clear();
+                        Game(DisasterInfo);
                         break;
                     case 3:
+                        Console.Clear();
                         LoginMenu = true;
                         UserLogin = false;
                         break;
