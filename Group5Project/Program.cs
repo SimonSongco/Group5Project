@@ -11,7 +11,11 @@ namespace Group5Project
 {
     internal class Program
     {
-        static (string, bool, bool) Login(List<string> UserInfo, string CurrentUser, bool UserLogin, bool LoginMenu)
+        static List<string> UserInfo = new List<string>();
+        static List<string> DisasterInfo = new List<string>();
+        static string CurrentUser = "";
+
+        static (string, bool, bool) Login(bool UserLogin, bool LoginMenu)
         {
             while (true)
             {
@@ -23,11 +27,11 @@ namespace Group5Project
 
                 for (int i = 0; i < UserInfo.Count; i++)
                 {
-                    string[] parts = UserInfo[i].Split(',');
+                    string[] parts = UserInfo[i].Split('|');
 
                     if (InputUsername == parts[0] && InputPassword == parts[1])
                     {
-                        return (CurrentUser, true, false);
+                        return (InputUsername, true, false);
                     }
                 }
 
@@ -38,7 +42,7 @@ namespace Group5Project
                 Console.Clear();
             }
         }
-        static List<string> Register(List<string> UserInfo)
+        static void Register()
         {
             while (true)
             {
@@ -49,7 +53,7 @@ namespace Group5Project
 
                 for (int i = 0; i < UserInfo.Count; i++)
                 {
-                    string[] parts = UserInfo[i].Split(',');
+                    string[] parts = UserInfo[i].Split('|');
 
                     if (InputUsername == parts[0])
                     {
@@ -77,10 +81,11 @@ namespace Group5Project
                     Console.ReadKey();
                     Console.Clear();
 
-                    string NewUserInfo = $"\n{InputUsername},{InputPassword},1";
+                    string NewUserInfo = $"\n{InputUsername}|{InputPassword}|1";
                     File.AppendAllText("User_Info.txt", NewUserInfo);
 
-                    return File.ReadAllLines("User_Info.txt").ToList();
+                    UserInfo = File.ReadAllLines("User_Info.txt").ToList();
+                    return;
                 }
                 else
                 {
@@ -91,13 +96,19 @@ namespace Group5Project
                 }
             }
         }
-        static void Game(List<string> DisasterInfo)
+        static List<string> DisasterGenerator(List<string> CurrentDisasters, int UserLevel)
         {
+            int MaxDisasters = 0;
+
+            if (UserLevel == 1) MaxDisasters = 3;
+            else if (UserLevel == 2) MaxDisasters = 5;
+            else if (UserLevel == 3) MaxDisasters = 7;
+            else MaxDisasters = 3;
+
             Random random = new Random();
             List<int> UsedIndexes = new List<int>();
-            List<string> CurrentDisasters = new List<string>();
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < MaxDisasters; i++)
             {
                 int randomIndex;
                 do
@@ -108,6 +119,80 @@ namespace Group5Project
 
                 UsedIndexes.Add(randomIndex);
                 CurrentDisasters.Add(DisasterInfo[randomIndex]);
+            }
+
+            return CurrentDisasters;
+        }
+        static void Game()
+        {
+            List<string> CurrentDisasters = new List<string>();
+
+            int TargetUserLevel = 1;
+            int UserLineIndex = -1;
+
+            for (int i = 0; i < UserInfo.Count; i++)
+            {
+                string[] parts = UserInfo[i].Split('|');
+                if (parts[0] == CurrentUser)
+                {
+                    TargetUserLevel = int.Parse(parts[2]);
+                    UserLineIndex = i;
+                    break;
+                }
+            }
+
+            string[] UserParts = UserInfo[UserLineIndex].Split('|');
+
+            if (TargetUserLevel <= 3)
+            {
+                Console.WriteLine("You Have Already Completed All The Levels");
+                Console.WriteLine("Press Any Key to Go Back");
+                Console.ReadKey();
+                Console.Clear();
+                return;
+            }
+
+            if (UserParts.Length > 3)
+            {
+                Console.WriteLine("--> Loading existing save...");
+                Thread.Sleep(800);
+
+                for (int i = 3; i < UserParts.Length; i++)
+                {
+                    string SavedDisasterID = UserParts[i].Trim();
+                    string MatchedDisaster = null;
+
+                    foreach (string DisasterLine in DisasterInfo)
+                    {
+                        string[] DisasterParts = DisasterLine.Split('|');
+
+                        if (DisasterParts[0] == SavedDisasterID)
+                        {
+                            MatchedDisaster = DisasterLine;
+                            break;
+                        }
+                    }
+
+                    if (MatchedDisaster != null)
+                    {
+                        CurrentDisasters.Add(MatchedDisaster);
+                    }
+                }
+            }
+            else
+            {
+                CurrentDisasters = DisasterGenerator(CurrentDisasters, TargetUserLevel);
+
+                List<string> GeneratedIDs = new List<string>();
+                foreach (string disaster in CurrentDisasters)
+                {
+                    GeneratedIDs.Add(disaster.Split('|')[0]);
+                }
+
+                string updatedUserLine = UserInfo[UserLineIndex] + "|" + string.Join("|", GeneratedIDs);
+                UserInfo[UserLineIndex] = updatedUserLine;
+
+                File.WriteAllLines("User_Info.txt", UserInfo);
             }
 
             while (CurrentDisasters.Count > 0)
@@ -160,9 +245,7 @@ namespace Group5Project
                     Console.WriteLine();
 
                     string CorrectUnit = chosenParts[5].Trim();
-
                     string[] UnitNames = { "Police", "Firemen", "Healthcare", "First Aid", "Rescue Team" };
-
                     int correctIndex = int.Parse(CorrectUnit) - 1;
                     string CorrectUnitNames = UnitNames[correctIndex];
 
@@ -194,22 +277,53 @@ namespace Group5Project
 
             if (CurrentDisasters.Count == 0)
             {
-                Console.Clear();
-                Console.WriteLine("=========================================");
-                Console.WriteLine("MISSION COMPLETE: All sectors clear!");
-                Console.WriteLine("=========================================");
-                Console.WriteLine("Press any key to go back to main menu.");
-                Console.ReadKey();
-                Console.Clear();
+                string[] parts = UserInfo[UserLineIndex].Split('|');
+                TargetUserLevel++;
+
+                string UpdatedUserLine = $"{parts[0]}|{parts[1]}|{TargetUserLevel}";
+                UserInfo[UserLineIndex] = UpdatedUserLine;
+
+                File.WriteAllLines("User_Info.txt", UserInfo);
+
+                while (true)
+                {
+                    Console.Clear();
+                    Console.WriteLine("=========================================");
+                    Console.WriteLine("     MISSION COMPLETE: All sectors clear!");
+                    Console.WriteLine($"     PROMOTED! You are now Level {TargetUserLevel}!");
+                    Console.WriteLine("=========================================");
+                    Console.WriteLine("[1] Next Level (Play Again)");
+                    Console.WriteLine("[2] Main Menu");
+                    Console.WriteLine();
+                    Console.Write("Choice: ");
+
+                    string postGameChoice = Console.ReadLine();
+
+                    if (postGameChoice == "1")
+                    {
+                        Console.Clear();
+                        Game();
+                        return;
+                    }
+                    else if (postGameChoice == "2")
+                    {
+                        Console.Clear();
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nInvalid choice! Press any key to try again...");
+                        Console.ReadKey();
+                    }
+                }
             }
         }
         static void Main(string[] args)
         {
-            List<string> UserInfo = File.ReadAllLines("User_Info.txt").ToList();
-            List<string> DisasterInfo = File.ReadAllLines("Disaster_Info.txt").ToList();
+            UserInfo = File.ReadAllLines("User_Info.txt").ToList();
+            DisasterInfo = File.ReadAllLines("Disaster_Info.txt").ToList();
             bool LoginMenu = true;
             bool UserLogin = false;
-            string CurrentUser = "";
 
             while (LoginMenu)
             {
@@ -227,11 +341,11 @@ namespace Group5Project
                 {
                     case 1:
                         Console.Clear();
-                        (CurrentUser, UserLogin, LoginMenu) = Login(UserInfo, CurrentUser, UserLogin, LoginMenu);
+                        (CurrentUser, UserLogin, LoginMenu) = Login(UserLogin, LoginMenu);
                         break;
                     case 2:
                         Console.Clear();
-                        UserInfo = Register(UserInfo);
+                        Register();
                         break;
                     case 3:
                         Console.Clear();
@@ -264,11 +378,10 @@ namespace Group5Project
                 {
                     case 1:
                         Console.Clear();
-                        Game(DisasterInfo);
+                        Game();
                         break;
                     case 2:
                         Console.Clear();
-                        Game(DisasterInfo);
                         break;
                     case 3:
                         Console.Clear();
