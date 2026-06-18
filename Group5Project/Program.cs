@@ -33,14 +33,26 @@ namespace Group5Project
 
                     if (InputUsername == parts[0] && InputPassword == parts[1])
                     {
+                        for (int j = 0; j < 3; j++)
+                        {
+                            Console.Clear();
+                            Console.WriteLine("Logging In.");
+                            Thread.Sleep(200);
+                            Console.Clear();
+                            Console.WriteLine("Logging In..");
+                            Thread.Sleep(200);
+                            Console.Clear();
+                            Console.WriteLine("Logging In...");
+                            Thread.Sleep(200);
+                            Console.Clear();
+                        }
                         return (InputUsername, true, false);
                     }
                 }
 
                 Console.WriteLine();
-                Console.WriteLine("Invalid Credentials!");
-                Console.WriteLine("Press Any Key To Try Again.");
-                Console.ReadKey();
+                Console.WriteLine("Invalid Credentials! Please Try Again.");
+                Thread.Sleep(1000);
                 Console.Clear();
             }
         }
@@ -79,7 +91,7 @@ namespace Group5Project
                 if (InputPassword == InputConfirmPassword)
                 {
                     Console.WriteLine("Account Created!");
-                    Console.WriteLine("Press Any Key To Go Back!");
+                    Thread.Sleep(1000);
                     Console.ReadKey();
                     Console.Clear();
 
@@ -91,9 +103,8 @@ namespace Group5Project
                 }
                 else
                 {
-                    Console.WriteLine("Credentials Not Valid!");
-                    Console.WriteLine("Press Any Key To Try Again.");
-                    Console.ReadKey();
+                    Console.WriteLine("Credentials Not Valid! Please Try Again.");
+                    Thread.Sleep(1000);
                     Console.Clear();
                 }
             }
@@ -150,7 +161,7 @@ namespace Group5Project
                 TargetUserLevel = 1;
                 Reputation = 40;
 
-                Console.WriteLine("\nProgress reset! Loading Level 1...");
+                Console.WriteLine("\nProgress Reset! Loading Level 1...");
                 Thread.Sleep(1000);
                 Console.Clear();
 
@@ -158,7 +169,7 @@ namespace Group5Project
             }
             else
             {
-                Console.WriteLine("\nAction canceled. Returning to menu...");
+                Console.WriteLine("\nAction Canceled. Returning to Menu...");
                 Thread.Sleep(1000);
                 Console.Clear();
             }
@@ -189,8 +200,7 @@ namespace Group5Project
             if (TargetUserLevel > 3)
             {
                 Console.WriteLine("You Have Already Completed All The Levels");
-                Console.WriteLine("Press Any Key to Go Back");
-                Console.ReadKey();
+                Thread.Sleep(1000);
                 Console.Clear();
                 return;
             }
@@ -260,7 +270,7 @@ namespace Group5Project
 
                 if (ChoiceInput == "0")
                 {
-                    Console.WriteLine("\nReturning to menu...");
+                    Console.WriteLine("\nReturning to Menu...");
                     Thread.Sleep(1000);
                     Console.Clear();
                     break;
@@ -270,23 +280,39 @@ namespace Group5Project
                 {
                     string ChosenDisaster = CurrentDisasters[choice - 1];
                     string[] chosenParts = ChosenDisaster.Split('|');
+                    bool SelectionValid = true;
+                    string UnitChoice = "";
 
-                    Console.Clear();
-                    Console.WriteLine($"---> RESPONDING TO: {chosenParts[1]} <---");
-                    Console.WriteLine($"Details: {chosenParts[4]}");
-                    Console.WriteLine("--------------------------------------------------");
-                    Console.WriteLine();
+                    while (SelectionValid)
+                    {
+                        Console.Clear();
+                        Console.WriteLine($"---> RESPONDING TO: {chosenParts[1]} <---");
+                        Console.WriteLine($"Details: {chosenParts[4]}");
+                        Console.WriteLine("--------------------------------------------------");
+                        Console.WriteLine();
 
-                    Console.WriteLine("Choose the BEST department to dispatch:");
-                    Console.WriteLine("[1] Police");
-                    Console.WriteLine("[2] Firemen");
-                    Console.WriteLine("[3] Healthcare");
-                    Console.WriteLine("[4] First Aid");
-                    Console.WriteLine("[5] Rescue Team");
-                    Console.WriteLine();
-                    Console.Write("Your Selection (1-5): ");
-                    string UnitChoice = Console.ReadLine();
-                    Console.WriteLine();
+                        Console.WriteLine("Choose the BEST department to dispatch:");
+                        Console.WriteLine("[1] Police");
+                        Console.WriteLine("[2] Firemen");
+                        Console.WriteLine("[3] Healthcare");
+                        Console.WriteLine("[4] First Aid");
+                        Console.WriteLine("[5] Rescue Team");
+                        Console.WriteLine();
+                        Console.Write("Your Selection (1-5): ");
+                        UnitChoice = Console.ReadLine();
+                        Console.WriteLine();
+
+                        if (int.Parse(UnitChoice) <= 0 || int.Parse(UnitChoice) >= 6)
+                        {
+                            Console.WriteLine("Enter a Valid Selection (1-5)!");
+                            Thread.Sleep(750);
+                            continue;
+                        }
+                        else
+                        {
+                            SelectionValid = false;
+                        }
+                    }
 
                     string CorrectUnit = chosenParts[5].Trim();
                     string[] UnitNames = { "Police", "Firemen", "Healthcare", "First Aid", "Rescue Team" };
@@ -321,13 +347,13 @@ namespace Group5Project
                     }
 
                     Console.WriteLine();
-                    Console.WriteLine("Press any key to refresh operational status board...");
+                    Console.WriteLine("Press Any Key to Refresh Operational Status Board...");
                     Console.ReadKey();
                 }
                 else
                 {
-                    Console.WriteLine("\nInvalid dispatch selection! Try again.");
-                    Thread.Sleep(1200);
+                    Console.WriteLine("\nInvalid Dispatch Selection! Try Again.");
+                    Thread.Sleep(750);
                 }
             }
 
