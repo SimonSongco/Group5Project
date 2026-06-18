@@ -343,7 +343,27 @@ namespace Group5Project
                         {
                             Console.Clear();
                             Console.WriteLine(m2 + $"---> RESPONDING TO: {chosenParts[1]} <---");
-                            Console.WriteLine(m2 + $"Details: {chosenParts[4]}");
+                            Console.Write(m2 + "Details: ");
+                            string[] words = chosenParts[4].Split(' ');
+
+                            string currentLine = "";
+                            int maxLen = 50;
+
+                            foreach (string word in words)
+                            {
+                                if ((currentLine + word).Length > maxLen)
+                                {
+                                    Console.WriteLine(currentLine.TrimEnd());
+                                    Console.Write(m2 + "         ");
+                                    currentLine = "";
+                                }
+                                currentLine += word + " ";
+                            }
+                            if (currentLine.Length > 0)
+                            {
+                                Console.WriteLine(currentLine.TrimEnd());
+                            }
+
                             Console.WriteLine(m2 + "--------------------------------------------------");
                             Console.WriteLine();
 
