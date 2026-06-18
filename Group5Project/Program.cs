@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Threading;
-using System.Linq.Expressions;
 
 namespace Group5Project
 {
@@ -17,14 +16,45 @@ namespace Group5Project
         static int TargetUserLevel = 1;
         static int Reputation = 40;
 
+        static void PrintDarkHeader()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+
+            string header = @"
+             ██████╗ ██╗   ██╗████████╗██████╗ ██████╗ ███████╗ █████╗ ██╗  ██╗
+            ██╔═══██╗██║   ██║╚══██╔══╝██╔══██╗██╔══██╗██╔════╝██╔══██╗██║ ██╔╝
+            ██║   ██║██║   ██║   ██║   ██████╔╝██████╔╝█████╗  ███████║█████╔╝ 
+            ██║   ██║██║   ██║   ██║   ██╔══██╗██╔══██╗██╔══╝  ██╔══██║██╔═██╗ 
+            ╚██████╔╝╚██████╔╝   ██║   ██████╔╝██║  ██║███████╗██║  ██║██║  ██╗
+             ╚═════╝  ╚═════╝    ╚═╝   ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝
+                                                                   
+                            ███████╗███████╗██████╗  ██████╗                       
+                            ╚══███╔╝██╔════╝██╔══██╗██╔═══██╗                      
+                              ███╔╝ █████╗  ██████╔╝██║   ██║                      
+                             ███╔╝  ██╔══╝  ██╔══██╗██║   ██║                      
+                            ███████╗███████╗██║  ██║╚██████╔╝                      
+                            ╚══════╝╚══════╝╚═╝  ╚═╝ ╚═════╝                       
+            ";
+            Console.WriteLine(header);
+            Console.ResetColor();
+        }
         static (string, bool, bool) Login(bool UserLogin, bool LoginMenu)
         {
+            string m = new string(' ', 31);
+            
             while (true)
             {
-                Console.Write("Username: ");
+                Console.WriteLine(m + "--------------------------");
+                Console.WriteLine(m + "      ACCOUNT LOGIN       ");
+                Console.WriteLine(m + "--------------------------");
+                Console.WriteLine(m + "  Press Enter to Go Back  ");
+                Console.WriteLine();
+                Console.Write(m + "Username: ");
                 string InputUsername = Console.ReadLine();
 
-                Console.Write("Password: ");
+                if (InputUsername == "") return (InputUsername, false, true);
+
+                Console.Write(m + "Password: ");
                 string InputPassword = Console.ReadLine();
 
                 for (int i = 0; i < UserInfo.Count; i++)
@@ -36,13 +66,16 @@ namespace Group5Project
                         for (int j = 0; j < 3; j++)
                         {
                             Console.Clear();
-                            Console.WriteLine("Logging In.");
+                            PrintDarkHeader();
+                            Console.WriteLine(new string(' ', 39) + "Logging In.");
                             Thread.Sleep(200);
                             Console.Clear();
-                            Console.WriteLine("Logging In..");
+                            PrintDarkHeader();
+                            Console.WriteLine(new string(' ', 39) + "Logging In..");
                             Thread.Sleep(200);
                             Console.Clear();
-                            Console.WriteLine("Logging In...");
+                            PrintDarkHeader();
+                            Console.WriteLine(new string(' ', 39) + "Logging In...");
                             Thread.Sleep(200);
                             Console.Clear();
                         }
@@ -51,18 +84,25 @@ namespace Group5Project
                 }
 
                 Console.WriteLine();
-                Console.WriteLine("Invalid Credentials! Please Try Again.");
+                Console.WriteLine(m + "Invalid Credentials! Please Try Again.");
                 Thread.Sleep(1000);
                 Console.Clear();
+                PrintDarkHeader();
             }
         }
         static void Register()
         {
+            string m = new string(' ', 31);
+            
             while (true)
             {
                 bool UsernameTaken = false;
 
-                Console.Write("Username: ");
+                Console.WriteLine(m + "--------------------------");
+                Console.WriteLine(m + "     ACCOUNT REGISTER     ");
+                Console.WriteLine(m + "--------------------------");
+                Console.WriteLine();
+                Console.Write(m + "Username: ");
                 string InputUsername = Console.ReadLine();
 
                 for (int i = 0; i < UserInfo.Count; i++)
@@ -71,10 +111,12 @@ namespace Group5Project
 
                     if (InputUsername == parts[0])
                     {
-                        Console.WriteLine("Username Already Taken!");
-                        Console.WriteLine("Press Any Key To Try Again.");
+                        Console.WriteLine();
+                        Console.WriteLine(m + "Username Already Taken!");
+                        Console.WriteLine(m + "Press Any Key To Try Again.");
                         Console.ReadKey();
                         Console.Clear();
+                        PrintDarkHeader();
                         UsernameTaken = true;
                         break;
                     }
@@ -82,17 +124,18 @@ namespace Group5Project
 
                 if (UsernameTaken) continue;
 
-                Console.Write("Password: ");
+                Console.Write(m + "Password: ");
                 string InputPassword = Console.ReadLine();
 
-                Console.Write("Confirm Password: ");
+                Console.Write(m + "Confirm Password: ");
                 string InputConfirmPassword = Console.ReadLine();
 
+                Console.WriteLine();
+                
                 if (InputPassword == InputConfirmPassword)
                 {
-                    Console.WriteLine("Account Created!");
+                    Console.WriteLine(m + "Account Created!");
                     Thread.Sleep(1000);
-                    Console.ReadKey();
                     Console.Clear();
 
                     string NewUserInfo = $"\n{InputUsername}|{InputPassword}|1|40";
@@ -103,9 +146,10 @@ namespace Group5Project
                 }
                 else
                 {
-                    Console.WriteLine("Credentials Not Valid! Please Try Again.");
+                    Console.WriteLine(m + "Credentials Not Valid! Please Try Again.");
                     Thread.Sleep(1000);
                     Console.Clear();
+                    PrintDarkHeader();
                 }
             }
         }
@@ -138,10 +182,14 @@ namespace Group5Project
         }
         static void NewGame()
         {
+            string m = new string(' ', 18);
+            
             Console.Clear();
-            Console.WriteLine("=== WARNING: START NEW GAME ===");
-            Console.WriteLine("This will overwrite your existing level and progress.");
-            Console.Write("Are you sure you want to start a New Game? (Y/N): ");
+            PrintDarkHeader();
+            Console.WriteLine(m + "=== WARNING: START NEW GAME ===");
+            Console.WriteLine(m + "This will overwrite your existing level and progress.");
+            Console.WriteLine();
+            Console.Write(m + "Are you sure you want to start a New Game? (Y/N): ");
             string ConfirmInput = Console.ReadLine().Trim().ToUpper();
 
             if (ConfirmInput == "Y")
@@ -161,7 +209,8 @@ namespace Group5Project
                 TargetUserLevel = 1;
                 Reputation = 40;
 
-                Console.WriteLine("\nProgress Reset! Loading Level 1...");
+                Console.WriteLine();
+                Console.WriteLine(m + "Progress Reset! Loading Level 1...");
                 Thread.Sleep(1000);
                 Console.Clear();
 
@@ -169,7 +218,8 @@ namespace Group5Project
             }
             else
             {
-                Console.WriteLine("\nAction Canceled. Returning to Menu...");
+                Console.WriteLine();
+                Console.WriteLine(m + "Action Canceled. Returning to Menu...");
                 Thread.Sleep(1000);
                 Console.Clear();
             }
@@ -181,9 +231,7 @@ namespace Group5Project
             while (Game)
             {
                 List<string> CurrentDisasters = new List<string>();
-
                 int UserLineIndex = -1;
-
                 int StartingReputation = 40;
 
                 for (int i = 0; i < UserInfo.Count; i++)
@@ -203,15 +251,16 @@ namespace Group5Project
 
                 if (TargetUserLevel > 3)
                 {
-                    Console.WriteLine("You Have Already Completed All The Levels");
-                    Thread.Sleep(1000);
+                    string m = new string(' ', 22);
+                    Console.WriteLine(m + "You Have Already Completed All The Levels!");
+                    Thread.Sleep(1500);
                     Console.Clear();
                     return;
                 }
 
                 if (UserParts.Length > 4)
                 {
-                    Console.WriteLine("--> Loading existing save...");
+                    Console.WriteLine(new string(' ', 30) + "--> Loading existing save...");
                     Thread.Sleep(800);
 
                     for (int i = 3; i < UserParts.Length; i++)
@@ -254,27 +303,29 @@ namespace Group5Project
 
                 while (CurrentDisasters.Count > 0)
                 {
+                    string m = new string(' ', 22);
                     Console.Clear();
-                    Console.WriteLine("=== EMERGENCY DISPATCH CONTROL CENTER ===");
-                    Console.WriteLine($"Active Emergencies Left: {CurrentDisasters.Count}");
-                    Console.WriteLine($"Current Reputation: {Reputation}%");
-                    Console.WriteLine("-----------------------------------------");
+                    Console.WriteLine(m + "=== EMERGENCY DISPATCH CONTROL CENTER ===");
+                    Console.WriteLine(m + $"Active Emergencies Left: {CurrentDisasters.Count}");
+                    Console.WriteLine(m + $"Current Reputation: {Reputation}%");
+                    Console.WriteLine(m + "-----------------------------------------");
                     Console.WriteLine();
 
                     for (int i = 0; i < CurrentDisasters.Count; i++)
                     {
                         string[] parts = CurrentDisasters[i].Split('|');
-                        Console.WriteLine("[{0}] {1}", i + 1, parts[1]);
-                        Console.WriteLine("    Severity: {0,-6} | Location: {1}", parts[2], parts[3]);
+                        Console.WriteLine(m + "[{0}] {1}", i + 1, parts[1]);
+                        Console.WriteLine(m + "    Severity: {0,-6} | Location: {1}", parts[2], parts[3]);
                         Console.WriteLine();
                     }
 
-                    Console.Write("Select an emergency to respond to (or type '0' to go back to menu): ");
+                    Console.Write(m + "Select an emergency to respond to (or '0' to exit): ");
                     string ChoiceInput = Console.ReadLine();
 
                     if (ChoiceInput == "0")
                     {
-                        Console.WriteLine("\nReturning to Menu...");
+                        Console.WriteLine();
+                        Console.WriteLine(m + "Returning to Menu...");
                         Thread.Sleep(1000);
                         Console.Clear();
                         break;
@@ -286,35 +337,30 @@ namespace Group5Project
                         string[] chosenParts = ChosenDisaster.Split('|');
                         bool SelectionValid = true;
                         string UnitChoice = "";
+                        string m2 = new string(' ', 18);
 
                         while (SelectionValid)
                         {
                             Console.Clear();
-                            Console.WriteLine($"---> RESPONDING TO: {chosenParts[1]} <---");
-                            Console.WriteLine($"Details: {chosenParts[4]}");
-                            Console.WriteLine("--------------------------------------------------");
+                            Console.WriteLine(m2 + $"---> RESPONDING TO: {chosenParts[1]} <---");
+                            Console.WriteLine(m2 + $"Details: {chosenParts[4]}");
+                            Console.WriteLine(m2 + "--------------------------------------------------");
                             Console.WriteLine();
 
-                            Console.WriteLine("Choose the BEST department to dispatch:");
-                            Console.WriteLine("[1] Police");
-                            Console.WriteLine("[2] Firemen");
-                            Console.WriteLine("[3] Healthcare");
-                            Console.WriteLine("[4] First Aid");
-                            Console.WriteLine("[5] Rescue Team");
+                            Console.WriteLine(m2 + "Choose the BEST department to dispatch:");
+                            Console.WriteLine(m2 + "[1] Police");
+                            Console.WriteLine(m2 + "[2] Firemen");
+                            Console.WriteLine(m2 + "[3] Healthcare");
+                            Console.WriteLine(m2 + "[4] First Aid");
+                            Console.WriteLine(m2 + "[5] Rescue Team");
                             Console.WriteLine();
-                            Console.Write("Your Selection (1-5): ");
+                            Console.Write(m2 + "Your Selection (1-5): ");
                             UnitChoice = Console.ReadLine();
                             Console.WriteLine();
 
-                            if (UnitChoice == "")
+                            if (UnitChoice == "" || !int.TryParse(UnitChoice, out int unitNum) || unitNum <= 0 || unitNum >= 6)
                             {
-                                Console.WriteLine("Enter a Valid Selection (1-5)!");
-                                Thread.Sleep(750);
-                                continue;
-                            }
-                            else if (int.Parse(UnitChoice) <= 0 || int.Parse(UnitChoice) >= 6)
-                            {
-                                Console.WriteLine("Enter a Valid Selection (1-5)!");
+                                Console.WriteLine(m2 + "Enter a Valid Selection (1-5)!");
                                 Thread.Sleep(750);
                                 continue;
                             }
@@ -332,94 +378,84 @@ namespace Group5Project
                         if (UnitChoice == CorrectUnit)
                         {
                             Reputation += 10;
+                            if (Reputation > 100) Reputation = 100;
 
-                            if (Reputation > 100)
-                                Reputation = 100;
-
-                            Console.WriteLine("SUCCESS! You deployed the correct emergency response unit.");
-                            Console.WriteLine("The area is secure. Removing emergency tracking card.");
-                            Console.WriteLine("+10 Reputation");
+                            Console.WriteLine(m2 + "SUCCESS! You deployed the correct emergency response unit.");
+                            Console.WriteLine(m2 + "The area is secure. Removing emergency tracking card.");
+                            Console.WriteLine(m2 + "+10 Reputation");
 
                             CurrentDisasters.RemoveAt(choice - 1);
                         }
                         else
                         {
                             Reputation -= 5;
+                            if (Reputation < 0) Reputation = 0;
 
-                            if (Reputation < 0)
-                                Reputation = 0;
-
-                            Console.WriteLine("FAILURE! You deployed an ineffective department.");
-                            Console.WriteLine($"The situation has deteriorated. The correct unit was: [{CorrectUnit}] {CorrectUnitNames}.");
-                            Console.WriteLine("-5 Reputation");
+                            Console.WriteLine(m2 + "FAILURE! You deployed an ineffective department.");
+                            Console.WriteLine(m2 + $"The situation has deteriorated. The correct unit was: [{CorrectUnit}] {CorrectUnitNames}.");
+                            Console.WriteLine(m2 + "-5 Reputation");
 
                             CurrentDisasters.RemoveAt(choice - 1);
                         }
 
                         Console.WriteLine();
-                        Console.WriteLine("Press Any Key to Refresh Operational Status Board...");
+                        Console.WriteLine(m2 + "Press Any Key to Refresh Operational Status Board...");
                         Console.ReadKey();
                     }
                     else
                     {
-                        Console.WriteLine("\nInvalid Dispatch Selection! Try Again.");
+                        Console.WriteLine();
+                        Console.WriteLine(m + "Invalid Dispatch Selection! Try Again.");
                         Thread.Sleep(750);
                     }
                 }
 
                 if (CurrentDisasters.Count == 0)
                 {
+                    string m = new string(' ', 22);
                     string[] parts = UserInfo[UserLineIndex].Split('|');
-
-                    int RequiredRep = 50;
-
-                    if (TargetUserLevel == 2)
-                        RequiredRep = 70;
-                    else if (TargetUserLevel == 3)
-                        RequiredRep = 90;
+                    int RequiredRep = TargetUserLevel == 3 ? 90 : (TargetUserLevel == 2 ? 70 : 50);
 
                     Console.Clear();
-                    Console.WriteLine("=========================================");
-                    Console.WriteLine("             LEVEL RESULTS");
-                    Console.WriteLine("=========================================");
-                    Console.WriteLine($"Current Reputation: {Reputation}%");
-                    Console.WriteLine($"Required Reputation: {RequiredRep}%");
+                    Console.WriteLine(m + "=========================================");
+                    Console.WriteLine(m + "             LEVEL RESULTS");
+                    Console.WriteLine(m + "=========================================");
+                    Console.WriteLine(m + $"Current Reputation: {Reputation}%");
+                    Console.WriteLine(m + $"Required Reputation: {RequiredRep}%");
                     Console.WriteLine();
 
                     if (Reputation >= RequiredRep)
                     {
                         TargetUserLevel++;
-
                         string UpdatedUserLine = $"{parts[0]}|{parts[1]}|{TargetUserLevel}|{Reputation}";
                         UserInfo[UserLineIndex] = UpdatedUserLine;
-
                         File.WriteAllLines("User_Info.txt", UserInfo);
 
-                        Console.WriteLine("PROMOTION SUCCESSFUL!");
+                        Console.WriteLine(m + "PROMOTION SUCCESSFUL!");
 
                         if (TargetUserLevel > 3)
                         {
-                            Console.WriteLine("YOU HAVE COMPLETED ALL LEVELS!");
+                            Console.WriteLine(m + "YOU HAVE COMPLETED ALL LEVELS!");
                             Console.ReadKey();
                             return;
                         }
 
-                        Console.WriteLine($"You are now Level {TargetUserLevel}!");
+                        Console.WriteLine(m + $"You are now Level {TargetUserLevel}!");
                     }
                     else
                     {
                         Reputation = StartingReputation;
-
                         string UpdatedUserLine = $"{parts[0]}|{parts[1]}|{TargetUserLevel}|{Reputation}";
                         UserInfo[UserLineIndex] = UpdatedUserLine;
                         File.WriteAllLines("User_Info.txt", UserInfo);
 
-                        Console.WriteLine("PROMOTION FAILED!");
-                        Console.WriteLine("Your reputation is too low.");
-                        Console.WriteLine("Your reputation has been restored to its previous state. Replay the level to try again.");
+                        Console.WriteLine(m + "PROMOTION FAILED!");
+                        Console.WriteLine(m + "Your reputation is too low.");
+                        Console.WriteLine(m + "Your reputation has been restored. Replay level to try again.");
                     }
 
-                    Console.WriteLine("Would You Like to Proceed? (Y/N): ");
+                    Console.WriteLine();
+                    Console.Write(m + "Would You Like to Proceed? (Y/N): ");
                     string Choice = Console.ReadLine();
 
                     if (Choice.ToUpper().Trim() == "Y")
@@ -435,22 +471,30 @@ namespace Group5Project
         }
         static void Main(string[] args)
         {
+            if (!File.Exists("User_Info.txt")) File.Create("User_Info.txt").Close();
+            if (!File.Exists("Disaster_Info.txt")) File.Create("Disaster_Info.txt").Close();
+
             UserInfo = File.ReadAllLines("User_Info.txt").ToList();
             DisasterInfo = File.ReadAllLines("Disaster_Info.txt").ToList();
+            
             bool LoginMenu = true;
             bool UserLogin = false;
             bool Menu = true;
+
+            string m = new string(' ', 38);
 
             while (Menu)
             {
                 while (LoginMenu)
                 {
-                    Console.WriteLine("[1] Login");
-                    Console.WriteLine("[2] Register");
-                    Console.WriteLine("[3] Exit");
+                    Console.Clear();
+                    PrintDarkHeader();
+                    Console.WriteLine(m + "[1] Login");
+                    Console.WriteLine(m + "[2] Register");
+                    Console.WriteLine(m + "[3] Exit");
                     Console.WriteLine();
 
-                    Console.Write("Choice: ");
+                    Console.Write(m + "Choice: ");
                     string Input = Console.ReadLine();
 
                     int.TryParse(Input, out int MenuChoice);
@@ -459,10 +503,12 @@ namespace Group5Project
                     {
                         case 1:
                             Console.Clear();
+                            PrintDarkHeader();
                             (CurrentUser, UserLogin, LoginMenu) = Login(UserLogin, LoginMenu);
                             break;
                         case 2:
                             Console.Clear();
+                            PrintDarkHeader();
                             Register();
                             break;
                         case 3:
@@ -472,10 +518,9 @@ namespace Group5Project
                             break;
                         default:
                             Console.WriteLine();
-                            Console.WriteLine("Enter A Valid Choice! Try Again.");
-                            Console.WriteLine("Press Any Key To Try Again.");
+                            Console.WriteLine(m + "Enter A Valid Choice! Try Again.");
+                            Console.WriteLine(m + "Press Any Key To Try Again.");
                             Console.ReadKey();
-                            Console.Clear();
                             break;
                     }
                 }
@@ -483,12 +528,13 @@ namespace Group5Project
                 while (UserLogin)
                 {
                     Console.Clear();
-                    Console.WriteLine("[1] Load Game");
-                    Console.WriteLine("[2] New Game");
-                    Console.WriteLine("[3] Logout");
+                    PrintDarkHeader();
+                    Console.WriteLine(m + "[1] Load Game");
+                    Console.WriteLine(m + "[2] New Game");
+                    Console.WriteLine(m + "[3] Logout");
                     Console.WriteLine();
 
-                    Console.Write("Choice: ");
+                    Console.Write(m + "Choice: ");
                     string Input = Console.ReadLine();
 
                     int.TryParse(Input, out int MenuChoice);
@@ -500,29 +546,26 @@ namespace Group5Project
                             Game();
                             break;
                         case 2:
-                            Console.Clear();
                             NewGame();
                             break;
                         case 3:
                             Console.Clear();
                             LoginMenu = true;
                             UserLogin = false;
-                            Console.WriteLine($"Logged Out as {CurrentUser}");
+                            PrintDarkHeader();
+                            Console.WriteLine(m + $"Logged Out as {CurrentUser}");
                             Console.WriteLine();
+                            Thread.Sleep(1000);
                             break;
                         default:
                             Console.WriteLine();
-                            Console.WriteLine("Enter A Valid Choice! Try Again.");
-                            Console.WriteLine("Press Any Key To Try Again.");
+                            Console.WriteLine(m + "Enter A Valid Choice! Try Again.");
+                            Console.WriteLine(m + "Press Any Key To Try Again.");
                             Console.ReadKey();
-                            Console.Clear();
                             break;
                     }
                 }
             }
-
-            Console.WriteLine("Went Out Of Main Menu!");
-            Console.ReadKey();
         }
     }
 }
