@@ -108,9 +108,12 @@ namespace Group5Project
                 Console.WriteLine(m + "     ACCOUNT REGISTER     ");
                 Console.WriteLine(m + "--------------------------");
                 Console.ResetColor();
+                Console.WriteLine(m + "  Press Enter to Go Back  ");
                 Console.WriteLine();
                 Console.Write(m + "Username: ");
                 string InputUsername = Console.ReadLine();
+
+                if (InputUsername == "") return;
 
                 for (int i = 0; i < UserInfo.Count; i++)
                 {
