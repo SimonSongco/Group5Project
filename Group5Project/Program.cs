@@ -44,12 +44,14 @@ namespace Group5Project
         static (string, bool, bool) Login(bool UserLogin, bool LoginMenu)
         {
             string m = new string(' ', 31);
-            
+
             while (true)
             {
+                Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine(m + "--------------------------");
                 Console.WriteLine(m + "      ACCOUNT LOGIN       ");
                 Console.WriteLine(m + "--------------------------");
+                Console.ResetColor();
                 Console.WriteLine(m + "  Press Enter to Go Back  ");
                 Console.WriteLine();
                 Console.Write(m + "Username: ");
@@ -96,14 +98,16 @@ namespace Group5Project
         static void Register()
         {
             string m = new string(' ', 31);
-            
+
             while (true)
             {
                 bool UsernameTaken = false;
 
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine(m + "--------------------------");
                 Console.WriteLine(m + "     ACCOUNT REGISTER     ");
                 Console.WriteLine(m + "--------------------------");
+                Console.ResetColor();
                 Console.WriteLine();
                 Console.Write(m + "Username: ");
                 string InputUsername = Console.ReadLine();
@@ -134,7 +138,7 @@ namespace Group5Project
                 string InputConfirmPassword = Console.ReadLine();
 
                 Console.WriteLine();
-                
+
                 if (InputPassword == InputConfirmPassword)
                 {
                     Console.WriteLine(m + "Account Created!");
@@ -185,12 +189,15 @@ namespace Group5Project
         }
         static void NewGame()
         {
-            string m = new string(' ', 18);
-            
+            string m = new string(' ', 20);
+            string m2 = new string(' ', 29);
+
             Console.Clear();
             PrintDarkHeader();
-            Console.WriteLine(m + "=== WARNING: START NEW GAME ===");
+            Console.WriteLine(m2 + "=== WARNING: START NEW GAME ===");
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(m + "This will overwrite your existing level and progress.");
+            Console.ResetColor();
             Console.WriteLine();
             Console.Write(m + "Are you sure you want to start a New Game? (Y/N): ");
             string ConfirmInput = Console.ReadLine().Trim().ToUpper();
@@ -310,7 +317,27 @@ namespace Group5Project
                     Console.Clear();
                     Console.WriteLine(m + "=== EMERGENCY DISPATCH CONTROL CENTER ===");
                     Console.WriteLine(m + $"Active Emergencies Left: {CurrentDisasters.Count}");
-                    Console.WriteLine(m + $"Current Reputation: {Reputation}%");
+                    Console.Write(m + $"Current Reputation: ");
+
+                    if (Reputation <= 40)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"{Reputation}%");
+                        Console.ResetColor();
+                    }
+                    else if (Reputation <= 70)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine($"{Reputation}%");
+                        Console.ResetColor();
+                    }
+                    else if (Reputation <= 100)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"{Reputation}%");
+                        Console.ResetColor();
+                    }
+
                     Console.WriteLine(m + "-----------------------------------------");
                     Console.WriteLine();
 
@@ -404,9 +431,14 @@ namespace Group5Project
                             Reputation += 10;
                             if (Reputation > 100) Reputation = 100;
 
-                            Console.WriteLine(m2 + "SUCCESS! You deployed the correct emergency response unit.");
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.Write(m2 + "SUCCESS! ");
+                            Console.ResetColor();
+                            Console.WriteLine("You deployed the correct emergency response unit.");
                             Console.WriteLine(m2 + "The area is secure. Removing emergency tracking card.");
+                            Console.ForegroundColor = ConsoleColor.Green;
                             Console.WriteLine(m2 + "+10 Reputation");
+                            Console.ResetColor();
 
                             CurrentDisasters.RemoveAt(choice - 1);
                         }
@@ -415,9 +447,14 @@ namespace Group5Project
                             Reputation -= 5;
                             if (Reputation < 0) Reputation = 0;
 
-                            Console.WriteLine(m2 + "FAILURE! You deployed an ineffective department.");
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.Write(m2 + "FAILURE! ");
+                            Console.ResetColor();
+                            Console.WriteLine("You deployed an ineffective department.");
                             Console.WriteLine(m2 + $"The situation has deteriorated. The correct unit was: [{CorrectUnit}] {CorrectUnitNames}.");
+                            Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine(m2 + "-5 Reputation");
+                            Console.ResetColor();
 
                             CurrentDisasters.RemoveAt(choice - 1);
                         }
@@ -444,8 +481,34 @@ namespace Group5Project
                     Console.WriteLine(m + "=========================================");
                     Console.WriteLine(m + "             LEVEL RESULTS");
                     Console.WriteLine(m + "=========================================");
-                    Console.WriteLine(m + $"Current Reputation: {Reputation}%");
-                    Console.WriteLine(m + $"Required Reputation: {RequiredRep}%");
+                    Console.Write(m + $"Current Reputation: ");
+
+                    if (Reputation <= 40)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"{Reputation}%");
+                        Console.ResetColor();
+                    }
+                    else if (Reputation <= 70)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine($"{Reputation}%");
+                        Console.ResetColor();
+                    }
+                    else if (Reputation <= 100)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"{Reputation}%");
+                        Console.ResetColor();
+                    }
+
+        
+                    Console.Write(m + $"Required Reputation: ");
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"{RequiredRep}%");
+                    Console.ResetColor();
+
                     Console.WriteLine();
 
                     if (Reputation >= RequiredRep)
@@ -455,7 +518,9 @@ namespace Group5Project
                         UserInfo[UserLineIndex] = UpdatedUserLine;
                         File.WriteAllLines("User_Info.txt", UserInfo);
 
+                        Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine(m + "PROMOTION SUCCESSFUL!");
+                        Console.ResetColor();
 
                         if (TargetUserLevel > 3)
                         {
@@ -473,7 +538,9 @@ namespace Group5Project
                         UserInfo[UserLineIndex] = UpdatedUserLine;
                         File.WriteAllLines("User_Info.txt", UserInfo);
 
+                        Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine(m + "PROMOTION FAILED!");
+                        Console.ResetColor();
                         Console.WriteLine(m + "Your reputation is too low.");
                         Console.WriteLine(m + "Your reputation has been restored. Replay level to try again.");
                     }
@@ -500,7 +567,7 @@ namespace Group5Project
 
             UserInfo = File.ReadAllLines("User_Info.txt").ToList();
             DisasterInfo = File.ReadAllLines("Disaster_Info.txt").ToList();
-            
+
             bool LoginMenu = true;
             bool UserLogin = false;
             bool Menu = true;
@@ -515,7 +582,10 @@ namespace Group5Project
                     PrintDarkHeader();
                     Console.WriteLine(m + "[1] Login");
                     Console.WriteLine(m + "[2] Register");
+
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(m + "[3] Exit");
+                    Console.ResetColor();
                     Console.WriteLine();
 
                     Console.Write(m + "Choice: ");
