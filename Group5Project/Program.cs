@@ -18,16 +18,15 @@ namespace Group5Project
 
         static void PrintDarkHeader()
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-
-            string header = @"
+            string header1 = @"
              ██████╗ ██╗   ██╗████████╗██████╗ ██████╗ ███████╗ █████╗ ██╗  ██╗
             ██╔═══██╗██║   ██║╚══██╔══╝██╔══██╗██╔══██╗██╔════╝██╔══██╗██║ ██╔╝
             ██║   ██║██║   ██║   ██║   ██████╔╝██████╔╝█████╗  ███████║█████╔╝ 
             ██║   ██║██║   ██║   ██║   ██╔══██╗██╔══██╗██╔══╝  ██╔══██║██╔═██╗ 
             ╚██████╔╝╚██████╔╝   ██║   ██████╔╝██║  ██║███████╗██║  ██║██║  ██╗
-             ╚═════╝  ╚═════╝    ╚═╝   ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝
-                                                                   
+             ╚═════╝  ╚═════╝    ╚═╝   ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝            
+            ";
+            string header2 = @"                                                      
                             ███████╗███████╗██████╗  ██████╗                       
                             ╚══███╔╝██╔════╝██╔══██╗██╔═══██╗                      
                               ███╔╝ █████╗  ██████╔╝██║   ██║                      
@@ -35,7 +34,11 @@ namespace Group5Project
                             ███████╗███████╗██║  ██║╚██████╔╝                      
                             ╚══════╝╚══════╝╚═╝  ╚═╝ ╚═════╝                       
             ";
-            Console.WriteLine(header);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(header1);
+
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine(header2);
             Console.ResetColor();
         }
         static (string, bool, bool) Login(bool UserLogin, bool LoginMenu)
@@ -328,6 +331,7 @@ namespace Group5Project
                         Console.WriteLine(m + "Returning to Menu...");
                         Thread.Sleep(1000);
                         Console.Clear();
+                        Game = false;
                         break;
                     }
 
