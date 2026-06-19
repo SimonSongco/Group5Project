@@ -150,7 +150,7 @@ namespace Group5Project
                     Thread.Sleep(1000);
                     Console.Clear();
 
-                    string NewUserInfo = $"\n{InputUsername}|{InputPassword}|1|40";
+                    string NewUserInfo = $"\n{InputUsername}|{InputPassword}|1|0";
                     File.AppendAllText("User_Info.txt", NewUserInfo);
 
                     UserInfo = File.ReadAllLines("User_Info.txt").ToList();
@@ -172,8 +172,9 @@ namespace Group5Project
 
             if (UserLevel == 1) MaxDisasters = 3;
             else if (UserLevel == 2) MaxDisasters = 5;
-            else if (UserLevel == 3) MaxDisasters = 7;
-            else MaxDisasters = 3;
+            else if (UserLevel == 3) MaxDisasters = 6;
+            else if (UserLevel == 4) MaxDisasters = 8;
+            else if (UserLevel == 5) MaxDisasters = 10;
 
             Random random = new Random();
             List<int> UsedIndexes = new List<int>();
@@ -216,7 +217,7 @@ namespace Group5Project
                     string[] parts = UserInfo[i].Split('|');
                     if (parts[0] == CurrentUser)
                     {
-                        string ResetUserLine = $"{parts[0]}|{parts[1]}|1|40";
+                        string ResetUserLine = $"{parts[0]}|{parts[1]}|1|0";
                         UserInfo[i] = ResetUserLine;
                         break;
                     }
@@ -250,7 +251,7 @@ namespace Group5Project
             {
                 List<string> CurrentDisasters = new List<string>();
                 int UserLineIndex = -1;
-                int StartingReputation = 40;
+                int StartingReputation = 0;
 
                 for (int i = 0; i < UserInfo.Count; i++)
                 {
@@ -267,7 +268,7 @@ namespace Group5Project
 
                 string[] UserParts = UserInfo[UserLineIndex].Split('|');
 
-                if (TargetUserLevel > 3)
+                if (TargetUserLevel > 5)
                 {
                     string m = new string(' ', 22);
                     Console.WriteLine(m + "You Have Already Completed All The Levels!");
@@ -319,32 +320,56 @@ namespace Group5Project
                     File.WriteAllLines("User_Info.txt", UserInfo);
                 }
 
+                int RequiredRep = 100;
+
+                if (TargetUserLevel == 2) RequiredRep = 60;
+                else if (TargetUserLevel == 3) RequiredRep = 75;
+                else if (TargetUserLevel == 4) RequiredRep = 90;
+                else if (TargetUserLevel == 5) RequiredRep = 100;
+
                 while (CurrentDisasters.Count > 0)
                 {
+                    int gainAmount = 0;
+                    int loseAmount = 0;
+
+                    switch (TargetUserLevel)
+                    {
+                        case 1: gainAmount = 35; loseAmount = 20; break;
+                        case 2: gainAmount = 20; loseAmount = 20; break;
+                        case 3: gainAmount = 20; loseAmount = 25; break;
+                        case 4: gainAmount = 15; loseAmount = 35; break;
+                        case 5: gainAmount = 10; loseAmount = 40; break;
+                    }
+
                     string m = new string(' ', 22);
                     Console.Clear();
                     Console.WriteLine(m + "=== EMERGENCY DISPATCH CONTROL CENTER ===");
                     Console.WriteLine(m + $"Active Emergencies Left: {CurrentDisasters.Count}");
                     Console.Write(m + $"Current Reputation: ");
 
-                    if (Reputation <= 40)
+                    if (Reputation <= RequiredRep * .50)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"{Reputation}%");
                         Console.ResetColor();
                     }
-                    else if (Reputation <= 70)
+                    else if (Reputation <= RequiredRep * .70)
                     {
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine($"{Reputation}%");
                         Console.ResetColor();
                     }
-                    else if (Reputation <= 100)
+                    else if (Reputation >= RequiredRep)
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine($"{Reputation}%");
                         Console.ResetColor();
                     }
+
+                    Console.Write(m + $"Required Reputation: ");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"{RequiredRep}%");
+                    Console.ResetColor();
 
                     Console.WriteLine(m + "-----------------------------------------");
                     Console.WriteLine();
@@ -435,7 +460,7 @@ namespace Group5Project
 
                         if (UnitChoice == CorrectUnit)
                         {
-                            Reputation += 10;
+                            Reputation += gainAmount;
                             if (Reputation > 100) Reputation = 100;
 
                             Console.ForegroundColor = ConsoleColor.Green;
@@ -444,14 +469,14 @@ namespace Group5Project
                             Console.WriteLine("You deployed the correct emergency response unit.");
                             Console.WriteLine(m2 + "The area is secure. Removing emergency tracking card.");
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.WriteLine(m2 + "+10 Reputation");
+                            Console.WriteLine(m2 + $"+{gainAmount}% Reputation");
                             Console.ResetColor();
 
                             CurrentDisasters.RemoveAt(choice - 1);
                         }
                         else
                         {
-                            Reputation -= 5;
+                            Reputation -= loseAmount;
                             if (Reputation < 0) Reputation = 0;
 
                             Console.ForegroundColor = ConsoleColor.Red;
@@ -460,7 +485,7 @@ namespace Group5Project
                             Console.WriteLine("You deployed an ineffective department.");
                             Console.WriteLine(m2 + $"The situation has deteriorated. The correct unit was: [{CorrectUnit}] {CorrectUnitNames}.");
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine(m2 + "-5 Reputation");
+                            Console.WriteLine(m2 + $"-{loseAmount}% Reputation");
                             Console.ResetColor();
 
                             CurrentDisasters.RemoveAt(choice - 1);
@@ -482,7 +507,6 @@ namespace Group5Project
                 {
                     string m = new string(' ', 22);
                     string[] parts = UserInfo[UserLineIndex].Split('|');
-                    int RequiredRep = TargetUserLevel == 3 ? 90 : (TargetUserLevel == 2 ? 70 : 50);
 
                     Console.Clear();
                     Console.WriteLine(m + "=========================================");
@@ -529,7 +553,7 @@ namespace Group5Project
                         Console.WriteLine(m + "PROMOTION SUCCESSFUL!");
                         Console.ResetColor();
 
-                        if (TargetUserLevel > 3)
+                        if (TargetUserLevel > 5)
                         {
                             Console.WriteLine(m + "YOU HAVE COMPLETED ALL LEVELS!");
                             Console.ReadKey();
