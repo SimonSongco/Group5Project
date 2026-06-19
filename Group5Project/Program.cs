@@ -19,20 +19,20 @@ namespace Group5Project
         static void PrintDarkHeader()
         {
             string header1 = @"
-             ██████╗ ██╗   ██╗████████╗██████╗ ██████╗ ███████╗ █████╗ ██╗  ██╗
-            ██╔═══██╗██║   ██║╚══██╔══╝██╔══██╗██╔══██╗██╔════╝██╔══██╗██║ ██╔╝
-            ██║   ██║██║   ██║   ██║   ██████╔╝██████╔╝█████╗  ███████║█████╔╝ 
-            ██║   ██║██║   ██║   ██║   ██╔══██╗██╔══██╗██╔══╝  ██╔══██║██╔═██╗ 
-            ╚██████╔╝╚██████╔╝   ██║   ██████╔╝██║  ██║███████╗██║  ██║██║  ██╗
-             ╚═════╝  ╚═════╝    ╚═╝   ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝            
+            ██████╗ ██╗   ██╗████████╗██████╗ ██████╗ ███████╗ █████╗ ██╗  ██╗
+           ██╔═══██╗██║   ██║╚══██╔══╝██╔══██╗██╔══██╗██╔════╝██╔══██╗██║ ██╔╝
+           ██║   ██║██║   ██║   ██║   ██████╔╝██████╔╝█████╗  ███████║█████╔╝ 
+           ██║   ██║██║   ██║   ██║   ██╔══██╗██╔══██╗██╔══╝  ██╔══██║██╔═██╗ 
+           ╚██████╔╝╚██████╔╝   ██║   ██████╔╝██║  ██║███████╗██║  ██║██║  ██╗
+            ╚═════╝  ╚═════╝    ╚═╝   ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝            
             ";
             string header2 = @"                                                      
-                            ███████╗███████╗██████╗  ██████╗                       
-                            ╚══███╔╝██╔════╝██╔══██╗██╔═══██╗                      
-                              ███╔╝ █████╗  ██████╔╝██║   ██║                      
-                             ███╔╝  ██╔══╝  ██╔══██╗██║   ██║                      
-                            ███████╗███████╗██║  ██║╚██████╔╝                      
-                            ╚══════╝╚══════╝╚═╝  ╚═╝ ╚═════╝                       
+                            ███████╗███████╗██████╗  ██████╗                        
+                            ╚══███╔╝██╔════╝██╔══██╗██╔═══██╗                       
+                              ███╔╝ █████╗  ██████╔╝██║   ██║                       
+                             ███╔╝  ██╔══╝  ██╔══██╗██║   ██║                       
+                            ███████╗███████╗██║  ██║╚██████╔╝                       
+                            ╚══════╝╚══════╝╚═╝  ╚═╝ ╚═════╝                        
             ";
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine(header1);
@@ -41,6 +41,7 @@ namespace Group5Project
             Console.WriteLine(header2);
             Console.ResetColor();
         }
+
         static (string, bool, bool) Login(bool UserLogin, bool LoginMenu)
         {
             string m = new string(' ', 31);
@@ -49,7 +50,7 @@ namespace Group5Project
             {
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine(m + "--------------------------");
-                Console.WriteLine(m + "      ACCOUNT LOGIN       ");
+                Console.WriteLine(m + "     ACCOUNT LOGIN        ");
                 Console.WriteLine(m + "--------------------------");
                 Console.ResetColor();
                 Console.WriteLine(m + "  Press Enter to Go Back  ");
@@ -95,6 +96,7 @@ namespace Group5Project
                 PrintDarkHeader();
             }
         }
+
         static void Register()
         {
             string m = new string(' ', 31);
@@ -160,6 +162,7 @@ namespace Group5Project
                 }
             }
         }
+
         static List<string> DisasterGenerator(List<string> CurrentDisasters, int UserLevel)
         {
             int MaxDisasters = 0;
@@ -187,6 +190,7 @@ namespace Group5Project
 
             return CurrentDisasters;
         }
+
         static void NewGame()
         {
             string m = new string(' ', 20);
@@ -234,6 +238,7 @@ namespace Group5Project
                 Console.Clear();
             }
         }
+
         static void Game()
         {
             bool Game = true;
@@ -345,7 +350,7 @@ namespace Group5Project
                     {
                         string[] parts = CurrentDisasters[i].Split('|');
                         Console.WriteLine(m + "[{0}] {1}", i + 1, parts[1]);
-                        Console.WriteLine(m + "    Severity: {0,-6} | Location: {1}", parts[2], parts[3]);
+                        Console.WriteLine(m + "   Severity: {0,-6} | Location: {1}", parts[2], parts[3]);
                         Console.WriteLine();
                     }
 
@@ -401,17 +406,16 @@ namespace Group5Project
                             Console.WriteLine(m2 + "Choose the BEST department to dispatch:");
                             Console.WriteLine(m2 + "[1] Police");
                             Console.WriteLine(m2 + "[2] Firemen");
-                            Console.WriteLine(m2 + "[3] Healthcare");
-                            Console.WriteLine(m2 + "[4] First Aid");
-                            Console.WriteLine(m2 + "[5] Rescue Team");
+                            Console.WriteLine(m2 + "[3] First Aid");
+                            Console.WriteLine(m2 + "[4] Rescue Team");
                             Console.WriteLine();
-                            Console.Write(m2 + "Your Selection (1-5): ");
+                            Console.Write(m2 + "Your Selection (1-4): ");
                             UnitChoice = Console.ReadLine();
                             Console.WriteLine();
 
-                            if (UnitChoice == "" || !int.TryParse(UnitChoice, out int unitNum) || unitNum <= 0 || unitNum >= 6)
+                            if (UnitChoice == "" || !int.TryParse(UnitChoice, out int unitNum) || unitNum <= 0 || unitNum >= 5)
                             {
-                                Console.WriteLine(m2 + "Enter a Valid Selection (1-5)!");
+                                Console.WriteLine(m2 + "Enter a Valid Selection (1-4)!");
                                 Thread.Sleep(750);
                                 continue;
                             }
@@ -422,7 +426,7 @@ namespace Group5Project
                         }
 
                         string CorrectUnit = chosenParts[5].Trim();
-                        string[] UnitNames = { "Police", "Firemen", "Healthcare", "First Aid", "Rescue Team" };
+                        string[] UnitNames = { "Police", "Firemen", "First Aid", "Rescue Team" };
                         int correctIndex = int.Parse(CorrectUnit) - 1;
                         string CorrectUnitNames = UnitNames[correctIndex];
 
@@ -502,7 +506,7 @@ namespace Group5Project
                         Console.ResetColor();
                     }
 
-        
+
                     Console.Write(m + $"Required Reputation: ");
 
                     Console.ForegroundColor = ConsoleColor.Green;
@@ -560,6 +564,7 @@ namespace Group5Project
                 }
             }
         }
+
         static void Main(string[] args)
         {
             if (!File.Exists("User_Info.txt")) File.Create("User_Info.txt").Close();
