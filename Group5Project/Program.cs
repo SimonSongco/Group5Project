@@ -41,7 +41,6 @@ namespace Group5Project
             Console.WriteLine(header2);
             Console.ResetColor();
         }
-
         static (string, bool, bool) Login(bool UserLogin, bool LoginMenu)
         {
             string m = new string(' ', 31);
@@ -96,7 +95,6 @@ namespace Group5Project
                 PrintDarkHeader();
             }
         }
-
         static void Register()
         {
             string m = new string(' ', 31);
@@ -165,7 +163,6 @@ namespace Group5Project
                 }
             }
         }
-
         static List<string> DisasterGenerator(List<string> CurrentDisasters, int UserLevel)
         {
             int MaxDisasters = 0;
@@ -194,7 +191,6 @@ namespace Group5Project
 
             return CurrentDisasters;
         }
-
         static void NewGame()
         {
             string m = new string(' ', 20);
@@ -242,7 +238,6 @@ namespace Group5Project
                 Console.Clear();
             }
         }
-
         static void Game()
         {
             bool Game = true;
@@ -306,6 +301,26 @@ namespace Group5Project
                 }
                 else
                 {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        Console.Clear();
+                        PrintDarkHeader();
+                        Console.WriteLine(new string(' ', 31) + "You Currently have no Save!");
+                        Console.WriteLine(new string(' ', 34) + "Generating Disasters.");
+                        Thread.Sleep(200);
+                        Console.Clear();
+                        PrintDarkHeader();
+                        Console.WriteLine(new string(' ', 31) + "You Currently have no Save!");
+                        Console.WriteLine(new string(' ', 34) + "Generating Disasters..");
+                        Thread.Sleep(200);
+                        Console.Clear();
+                        PrintDarkHeader();
+                        Console.WriteLine(new string(' ', 31) + "You Currently have no Save!");
+                        Console.WriteLine(new string(' ', 34) + "Generating Disasters...");
+                        Thread.Sleep(200);
+                        Console.Clear();
+                    }
+
                     CurrentDisasters = DisasterGenerator(CurrentDisasters, TargetUserLevel);
 
                     List<string> GeneratedIDs = new List<string>();
@@ -591,7 +606,6 @@ namespace Group5Project
                 }
             }
         }
-
         static void Main(string[] args)
         {
             if (!File.Exists("User_Info.txt")) File.Create("User_Info.txt").Close();
