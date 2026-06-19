@@ -213,7 +213,6 @@ namespace Group5Project
 
             return CurrentDisasters;
         }
-
         static void NewGame()
         {
             string m = new string(' ', 20);
@@ -243,7 +242,6 @@ namespace Group5Project
                 }
                 File.WriteAllLines("User_Info.txt", UserInfo);
 
-                // Clear used disasters record for New Game
                 for (int i = 0; i < PerPlayerDisasterInfo.Count; i++)
                 {
                     if (PerPlayerDisasterInfo[i].Split('|')[0] == CurrentUser)
@@ -272,7 +270,6 @@ namespace Group5Project
                 Console.Clear();
             }
         }
-
         static void Game()
         {
             bool Game = true;
@@ -342,17 +339,14 @@ namespace Group5Project
                         {
                             Console.Clear();
                             PrintDarkHeader();
-                            Console.WriteLine(new string(' ', 31) + "You Currently have no Save!");
                             Console.WriteLine(new string(' ', 34) + "Generating Disasters.");
                             Thread.Sleep(200);
                             Console.Clear();
                             PrintDarkHeader();
-                            Console.WriteLine(new string(' ', 31) + "You Currently have no Save!");
                             Console.WriteLine(new string(' ', 34) + "Generating Disasters..");
                             Thread.Sleep(200);
                             Console.Clear();
                             PrintDarkHeader();
-                            Console.WriteLine(new string(' ', 31) + "You Currently have no Save!");
                             Console.WriteLine(new string(' ', 34) + "Generating Disasters...");
                             Thread.Sleep(200);
                             Console.Clear();
@@ -639,7 +633,10 @@ namespace Group5Project
                         if (TargetUserLevel > 5)
                         {
                             Console.WriteLine(m + "YOU HAVE COMPLETED ALL LEVELS!");
+                            PrintDarkHeader();
+                            Console.WriteLine(new string(' ', 27) + "Press Any Key To Go To The Main Menu.");
                             Console.ReadKey();
+
                             return;
                         }
 
@@ -678,7 +675,6 @@ namespace Group5Project
                 }
             }
         }
-
         static void Main(string[] args)
         {
             if (!File.Exists("User_Info.txt")) File.Create("User_Info.txt").Close();
@@ -703,7 +699,6 @@ namespace Group5Project
                     PrintDarkHeader();
                     Console.WriteLine(m + "[1] Login");
                     Console.WriteLine(m + "[2] Register");
-
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(m + "[3] Exit");
                     Console.ResetColor();
@@ -746,7 +741,9 @@ namespace Group5Project
                     PrintDarkHeader();
                     Console.WriteLine(m + "[1] Load Game");
                     Console.WriteLine(m + "[2] New Game");
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(m + "[3] Logout");
+                    Console.ResetColor();
                     Console.WriteLine();
 
                     Console.Write(m + "Choice: ");
