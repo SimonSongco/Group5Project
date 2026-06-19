@@ -174,7 +174,6 @@ namespace Group5Project
             else if (UserLevel == 4) MaxDisasters = 8;
             else if (UserLevel == 5) MaxDisasters = 10;
 
-            // Read the player's previously used disaster IDs
             List<string> previouslyUsedIDs = new List<string>();
             foreach (string line in PerPlayerDisasterInfo)
             {
@@ -189,7 +188,6 @@ namespace Group5Project
                 }
             }
 
-            // Safeguard to prevent an infinite loop if we run out of unique disasters
             int availableDisasters = DisasterInfo.Count - previouslyUsedIDs.Count;
             if (MaxDisasters > availableDisasters) MaxDisasters = availableDisasters;
 
@@ -306,6 +304,7 @@ namespace Group5Project
 
                 if (UserParts.Length > 4)
                 {
+                    PrintDarkHeader();
                     Console.WriteLine(new string(' ', 30) + "--> Loading existing save...");
                     Thread.Sleep(800);
 
@@ -333,7 +332,7 @@ namespace Group5Project
                 }
                 else
                 {
-                    if (int.Parse(UserParts[2]) > 4)
+                    if (int.Parse(UserParts[2]) <= 1)
                     {
                         for (int j = 0; j < 3; j++)
                         {
