@@ -12,6 +12,7 @@ namespace Group5Project
     {
         static List<string> UserInfo = new List<string>();
         static List<string> DisasterInfo = new List<string>();
+        static List<string> PerPlayerDisasterInfo = new List<string>();
         static string CurrentUser = "";
         static int TargetUserLevel = 1;
         static int Reputation = 40;
@@ -26,7 +27,7 @@ namespace Group5Project
            ╚██████╔╝╚██████╔╝   ██║   ██████╔╝██║  ██║███████╗██║  ██║██║  ██╗
             ╚═════╝  ╚═════╝    ╚═╝   ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝            
             ";
-            string header2 = @"                                                      
+            string header2 = @"                                                        
                             ███████╗███████╗██████╗  ██████╗                        
                             ╚══███╔╝██╔════╝██╔══██╗██╔═══██╗                       
                               ███╔╝ █████╗  ██████╔╝██║   ██║                       
@@ -49,7 +50,7 @@ namespace Group5Project
             {
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine(m + "--------------------------");
-                Console.WriteLine(m + "     ACCOUNT LOGIN        ");
+                Console.WriteLine(m + "      ACCOUNT LOGIN       ");
                 Console.WriteLine(m + "--------------------------");
                 Console.ResetColor();
                 Console.WriteLine(m + "  Press Enter to Go Back  ");
@@ -173,17 +174,38 @@ namespace Group5Project
             else if (UserLevel == 4) MaxDisasters = 8;
             else if (UserLevel == 5) MaxDisasters = 10;
 
+            // Read the player's previously used disaster IDs
+            List<string> previouslyUsedIDs = new List<string>();
+            foreach (string line in PerPlayerDisasterInfo)
+            {
+                string[] parts = line.Split('|');
+                if (parts[0] == CurrentUser)
+                {
+                    for (int i = 1; i < parts.Length; i++)
+                    {
+                        previouslyUsedIDs.Add(parts[i]);
+                    }
+                    break;
+                }
+            }
+
+            // Safeguard to prevent an infinite loop if we run out of unique disasters
+            int availableDisasters = DisasterInfo.Count - previouslyUsedIDs.Count;
+            if (MaxDisasters > availableDisasters) MaxDisasters = availableDisasters;
+
             Random random = new Random();
             List<int> UsedIndexes = new List<int>();
 
             for (int i = 0; i < MaxDisasters; i++)
             {
                 int randomIndex;
+                string newDisasterID;
                 do
                 {
                     randomIndex = random.Next(0, DisasterInfo.Count);
+                    newDisasterID = DisasterInfo[randomIndex].Split('|')[0];
                 }
-                while (UsedIndexes.Contains(randomIndex));
+                while (UsedIndexes.Contains(randomIndex) || previouslyUsedIDs.Contains(newDisasterID));
 
                 UsedIndexes.Add(randomIndex);
                 CurrentDisasters.Add(DisasterInfo[randomIndex]);
@@ -191,6 +213,7 @@ namespace Group5Project
 
             return CurrentDisasters;
         }
+
         static void NewGame()
         {
             string m = new string(' ', 20);
@@ -218,8 +241,19 @@ namespace Group5Project
                         break;
                     }
                 }
-
                 File.WriteAllLines("User_Info.txt", UserInfo);
+
+                // Clear used disasters record for New Game
+                for (int i = 0; i < PerPlayerDisasterInfo.Count; i++)
+                {
+                    if (PerPlayerDisasterInfo[i].Split('|')[0] == CurrentUser)
+                    {
+                        PerPlayerDisasterInfo.RemoveAt(i);
+                        break;
+                    }
+                }
+                File.WriteAllLines("PerPlayer_Disaster_Info.txt", PerPlayerDisasterInfo);
+
                 TargetUserLevel = 1;
                 Reputation = 40;
 
@@ -238,6 +272,7 @@ namespace Group5Project
                 Console.Clear();
             }
         }
+
         static void Game()
         {
             bool Game = true;
@@ -277,7 +312,7 @@ namespace Group5Project
                     Console.WriteLine(new string(' ', 30) + "--> Loading existing save...");
                     Thread.Sleep(800);
 
-                    for (int i = 3; i < UserParts.Length; i++)
+                    for (int i = 4; i < UserParts.Length; i++)
                     {
                         string SavedDisasterID = UserParts[i].Trim();
                         string MatchedDisaster = null;
@@ -301,24 +336,27 @@ namespace Group5Project
                 }
                 else
                 {
-                    for (int j = 0; j < 3; j++)
+                    if (int.Parse(UserParts[2]) > 4)
                     {
-                        Console.Clear();
-                        PrintDarkHeader();
-                        Console.WriteLine(new string(' ', 31) + "You Currently have no Save!");
-                        Console.WriteLine(new string(' ', 34) + "Generating Disasters.");
-                        Thread.Sleep(200);
-                        Console.Clear();
-                        PrintDarkHeader();
-                        Console.WriteLine(new string(' ', 31) + "You Currently have no Save!");
-                        Console.WriteLine(new string(' ', 34) + "Generating Disasters..");
-                        Thread.Sleep(200);
-                        Console.Clear();
-                        PrintDarkHeader();
-                        Console.WriteLine(new string(' ', 31) + "You Currently have no Save!");
-                        Console.WriteLine(new string(' ', 34) + "Generating Disasters...");
-                        Thread.Sleep(200);
-                        Console.Clear();
+                        for (int j = 0; j < 3; j++)
+                        {
+                            Console.Clear();
+                            PrintDarkHeader();
+                            Console.WriteLine(new string(' ', 31) + "You Currently have no Save!");
+                            Console.WriteLine(new string(' ', 34) + "Generating Disasters.");
+                            Thread.Sleep(200);
+                            Console.Clear();
+                            PrintDarkHeader();
+                            Console.WriteLine(new string(' ', 31) + "You Currently have no Save!");
+                            Console.WriteLine(new string(' ', 34) + "Generating Disasters..");
+                            Thread.Sleep(200);
+                            Console.Clear();
+                            PrintDarkHeader();
+                            Console.WriteLine(new string(' ', 31) + "You Currently have no Save!");
+                            Console.WriteLine(new string(' ', 34) + "Generating Disasters...");
+                            Thread.Sleep(200);
+                            Console.Clear();
+                        }
                     }
 
                     CurrentDisasters = DisasterGenerator(CurrentDisasters, TargetUserLevel);
@@ -548,7 +586,6 @@ namespace Group5Project
                         Console.ResetColor();
                     }
 
-
                     Console.Write(m + $"Required Reputation: ");
 
                     Console.ForegroundColor = ConsoleColor.Green;
@@ -559,6 +596,37 @@ namespace Group5Project
 
                     if (Reputation >= RequiredRep)
                     {
+                        string[] currentUserParts = UserInfo[UserLineIndex].Split('|');
+                        List<string> newlyUsedIDs = new List<string>();
+
+                        for (int i = 4; i < currentUserParts.Length; i++)
+                        {
+                            newlyUsedIDs.Add(currentUserParts[i]);
+                        }
+
+                        int playerRecordIndex = -1;
+                        for (int i = 0; i < PerPlayerDisasterInfo.Count; i++)
+                        {
+                            if (PerPlayerDisasterInfo[i].Split('|')[0] == CurrentUser)
+                            {
+                                playerRecordIndex = i;
+                                break;
+                            }
+                        }
+
+                        if (playerRecordIndex != -1)
+                        {
+                            if (newlyUsedIDs.Count > 0)
+                                PerPlayerDisasterInfo[playerRecordIndex] += "|" + string.Join("|", newlyUsedIDs);
+                        }
+                        else
+                        {
+                            if (newlyUsedIDs.Count > 0)
+                                PerPlayerDisasterInfo.Add(CurrentUser + "|" + string.Join("|", newlyUsedIDs));
+                        }
+
+                        File.WriteAllLines("PerPlayer_Disaster_Info.txt", PerPlayerDisasterInfo);
+
                         TargetUserLevel++;
                         string UpdatedUserLine = $"{parts[0]}|{parts[1]}|{TargetUserLevel}|{Reputation}";
                         UserInfo[UserLineIndex] = UpdatedUserLine;
@@ -601,18 +669,25 @@ namespace Group5Project
                     }
                     else if (Choice.ToUpper().Trim() == "N")
                     {
+                        Console.Clear();
+                        PrintDarkHeader();
+                        Console.WriteLine(new string(' ', 31) + "Returning to Menu.");
+                        Thread.Sleep(1000);
                         Game = false;
                     }
                 }
             }
         }
+
         static void Main(string[] args)
         {
             if (!File.Exists("User_Info.txt")) File.Create("User_Info.txt").Close();
             if (!File.Exists("Disaster_Info.txt")) File.Create("Disaster_Info.txt").Close();
+            if (!File.Exists("PerPlayer_Disaster_Info.txt")) File.Create("PerPlayer_Disaster_Info.txt").Close();
 
             UserInfo = File.ReadAllLines("User_Info.txt").ToList();
             DisasterInfo = File.ReadAllLines("Disaster_Info.txt").ToList();
+            PerPlayerDisasterInfo = File.ReadAllLines("PerPlayer_Disaster_Info.txt").ToList();
 
             bool LoginMenu = true;
             bool UserLogin = false;
