@@ -75,17 +75,13 @@ namespace Group5Project
                         {
                             Console.Clear();
                             PrintDarkHeader();
-                            Console.WriteLine(new string(' ', 39) + "Logging In.");
+                            Console.Write(new string(' ', 39) + "Logging In");
+                            Console.Write('.');
                             Thread.Sleep(200);
-                            Console.Clear();
-                            PrintDarkHeader();
-                            Console.WriteLine(new string(' ', 39) + "Logging In..");
+                            Console.Write('.');
                             Thread.Sleep(200);
-                            Console.Clear();
-                            PrintDarkHeader();
-                            Console.WriteLine(new string(' ', 39) + "Logging In...");
+                            Console.Write('.');
                             Thread.Sleep(200);
-                            Console.Clear();
                         }
                         return (InputUsername, true, false);
                     }
@@ -340,17 +336,14 @@ namespace Group5Project
                         {
                             Console.Clear();
                             PrintDarkHeader();
-                            Console.WriteLine(new string(' ', 34) + "Generating Disasters.");
+                            Console.Write(new string(' ', 34) + "Generating Disasters");
+                            Console.Write('.');
                             Thread.Sleep(200);
-                            Console.Clear();
-                            PrintDarkHeader();
-                            Console.WriteLine(new string(' ', 34) + "Generating Disasters..");
+                            Console.Write('.');
                             Thread.Sleep(200);
-                            Console.Clear();
-                            PrintDarkHeader();
-                            Console.WriteLine(new string(' ', 34) + "Generating Disasters...");
+                            Console.Write('.');
                             Thread.Sleep(200);
-                            Console.Clear();
+
                         }
                     }
 
@@ -730,8 +723,7 @@ namespace Group5Project
                         default:
                             Console.WriteLine();
                             Console.WriteLine(m + "Enter A Valid Choice! Try Again.");
-                            Console.WriteLine(m + "Press Any Key To Try Again.");
-                            Console.ReadKey();
+                            Thread.Sleep(750);
                             break;
                     }
                 }
@@ -773,8 +765,7 @@ namespace Group5Project
                         default:
                             Console.WriteLine();
                             Console.WriteLine(m + "Enter A Valid Choice! Try Again.");
-                            Console.WriteLine(m + "Press Any Key To Try Again.");
-                            Console.ReadKey();
+                            Thread.Sleep(750);
                             break;
                     }
                 }
