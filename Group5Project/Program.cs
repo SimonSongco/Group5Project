@@ -302,9 +302,18 @@ namespace Group5Project
 
                 if (UserParts.Length > 4)
                 {
-                    PrintDarkHeader();
-                    Console.WriteLine(new string(' ', 30) + "--> Loading existing save...");
-                    Thread.Sleep(800);
+                    for (int i = 0; i < 3; i++)
+                    {
+                        Console.Clear();
+                        PrintDarkHeader();
+                        Console.Write(new string(' ', 33) + "Loading existing save");
+                        Console.Write('.');
+                        Thread.Sleep(200);
+                        Console.Write('.');
+                        Thread.Sleep(200);
+                        Console.Write('.');
+                        Thread.Sleep(200);
+                    }
 
                     for (int i = 4; i < UserParts.Length; i++)
                     {
