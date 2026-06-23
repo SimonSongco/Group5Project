@@ -76,6 +76,7 @@ namespace Group5Project
                             Console.Clear();
                             PrintDarkHeader();
                             Console.Write(new string(' ', 39) + "Logging In");
+                            Thread.Sleep(200);
                             Console.Write('.');
                             Thread.Sleep(200);
                             Console.Write('.');
@@ -346,6 +347,7 @@ namespace Group5Project
                             Console.Clear();
                             PrintDarkHeader();
                             Console.Write(new string(' ', 34) + "Generating Disasters");
+                            Thread.Sleep(200);
                             Console.Write('.');
                             Thread.Sleep(200);
                             Console.Write('.');
@@ -437,9 +439,19 @@ namespace Group5Project
 
                     if (ChoiceInput == "0")
                     {
-                        Console.WriteLine();
-                        Console.WriteLine(m + "Returning to Menu...");
-                        Thread.Sleep(1000);
+                        for (int i = 0; i < 3; i++)
+                        {
+                            string m2 = new string(' ', 36);
+                            Console.Clear();
+                            PrintDarkHeader();
+                            Console.Write(m2 + "Returning to Menu");
+                            Thread.Sleep(200);
+                            Console.Write('.');
+                            Thread.Sleep(200);
+                            Console.Write('.');
+                            Thread.Sleep(200);
+                            Console.Write('.');
+                        }
                         Console.Clear();
                         Game = false;
                         break;
