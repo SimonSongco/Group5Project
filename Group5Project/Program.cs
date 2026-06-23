@@ -148,7 +148,7 @@ namespace Group5Project
                     Thread.Sleep(1000);
                     Console.Clear();
 
-                    string NewUserInfo = $"\n{InputUsername}|{InputPassword}|1|0";
+                    string NewUserInfo = $"\n{InputUsername}|{InputPassword}|0|0";
                     File.AppendAllText("User_Info.txt", NewUserInfo);
 
                     UserInfo = File.ReadAllLines("User_Info.txt").ToList();
@@ -215,17 +215,51 @@ namespace Group5Project
             string m = new string(' ', 20);
             string m2 = new string(' ', 29);
 
-            Console.Clear();
-            PrintDarkHeader();
-            Console.WriteLine(m2 + "=== WARNING: START NEW GAME ===");
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(m + "This will overwrite your existing level and progress.");
-            Console.ResetColor();
-            Console.WriteLine();
-            Console.Write(m + "Are you sure you want to start a New Game? (Y/N): ");
-            string ConfirmInput = Console.ReadLine().Trim().ToUpper();
+            // Find current user level
+            int currentUserLevel = 0;
+            for (int i = 0; i < UserInfo.Count; i++)
+            {
+                string[] parts = UserInfo[i].Split('|');
+                if (parts[0] == CurrentUser)
+                {
+                    currentUserLevel = int.Parse(parts[2]);
+                    break;
+                }
+            }
 
-            if (ConfirmInput == "Y")
+            bool proceedWithNewGame = false;
+
+            if (currentUserLevel == 0)
+            {
+                proceedWithNewGame = true;
+            }
+            else
+            {
+                Console.Clear();
+                PrintDarkHeader();
+                Console.WriteLine(m2 + "=== WARNING: START NEW GAME ===");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(m + "This will overwrite your existing level and progress.");
+                Console.ResetColor();
+                Console.WriteLine();
+                Console.Write(m + "Are you sure you want to start a New Game? (Y/N): ");
+                string ConfirmInput = Console.ReadLine().Trim().ToUpper();
+
+                if (ConfirmInput == "Y")
+                {
+                    proceedWithNewGame = true;
+                }
+                else
+                {
+                    Console.WriteLine();
+                    Console.WriteLine(m + "Action Canceled. Returning to Menu...");
+                    Thread.Sleep(1000);
+                    Console.Clear();
+                    return;
+                }
+            }
+
+            if (proceedWithNewGame)
             {
                 for (int i = 0; i < UserInfo.Count; i++)
                 {
@@ -253,18 +287,21 @@ namespace Group5Project
                 Reputation = 40;
 
                 Console.WriteLine();
-                Console.WriteLine(m + "Progress Reset! Loading Level 1...");
+                if (currentUserLevel == 0)
+                {
+                    Console.Clear();
+                    PrintDarkHeader();
+                    Console.WriteLine(m + "       Starting First Game! Loading Level 1.");
+                }
+                else
+                {
+                    Console.WriteLine(m + "          Progress Reset! Loading Level 1.");
+                }
+
                 Thread.Sleep(1000);
                 Console.Clear();
 
                 Game();
-            }
-            else
-            {
-                Console.WriteLine();
-                Console.WriteLine(m + "Action Canceled. Returning to Menu...");
-                Thread.Sleep(1000);
-                Console.Clear();
             }
         }
         static void Game()
@@ -768,8 +805,28 @@ namespace Group5Project
                     switch (MenuChoice)
                     {
                         case 1:
-                            Console.Clear();
-                            Game();
+                            int checkLevel = 0;
+                            foreach (var user in UserInfo)
+                            {
+                                string[] parts = user.Split('|');
+                                if (parts[0] == CurrentUser)
+                                {
+                                    checkLevel = int.Parse(parts[2]);
+                                    break;
+                                }
+                            }
+
+                            if (checkLevel == 0)
+                            {
+                                Console.WriteLine();
+                                Console.WriteLine(new string(' ', 22) + "No save data found. Please start a New Game!");
+                                Thread.Sleep(1500);
+                            }
+                            else
+                            {
+                                Console.Clear();
+                                Game();
+                            }
                             break;
                         case 2:
                             NewGame();
