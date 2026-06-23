@@ -215,7 +215,6 @@ namespace Group5Project
             string m = new string(' ', 20);
             string m2 = new string(' ', 29);
 
-            // Find current user level
             int currentUserLevel = 0;
             for (int i = 0; i < UserInfo.Count; i++)
             {
