@@ -137,6 +137,17 @@ namespace Group5Project
                 Console.Write(m + "Password: ");
                 string InputPassword = Console.ReadLine();
 
+                if (InputPassword == "")
+                {
+                    Console.WriteLine();
+                    Console.WriteLine(m + "Password Cannot Be Empty!");
+                    Console.WriteLine(m + "Press Any Key To Try Again.");
+                    Console.ReadKey();
+                    Console.Clear();
+                    PrintDarkHeader();
+                    continue;
+                }
+
                 Console.Write(m + "Confirm Password: ");
                 string InputConfirmPassword = Console.ReadLine();
 
@@ -764,20 +775,19 @@ namespace Group5Project
                 }
             }
 
-            // Sort descending (highest first)
             players = players.OrderByDescending(p => p.rating).ToList();
 
-            Console.WriteLine(m + "Rank   Player        Rating (0-10)");
+            Console.WriteLine(m + "Rank   Player            Points    ");
             Console.WriteLine(m + "-----------------------------------");
 
             int rank = 1;
 
             foreach (var player in players)
             {
-                Console.WriteLine(m + $"{rank,-6} {player.username,-12} {player.rating:F1}/10");
+                Console.WriteLine(m + $"{rank,-6} {player.username,-12} {player.rating:F1}");
                 rank++;
 
-                if (rank > 10) break; // Top 10 only
+                if (rank > 10) break;
             }
 
             Console.WriteLine();
