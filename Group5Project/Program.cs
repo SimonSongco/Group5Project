@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -438,7 +438,7 @@ namespace Group5Project
                         case 5: gainAmount = 10; loseAmount = 40; break;
                     }
 
-                    
+
                     Console.Clear();
                     Console.WriteLine(m + "=== EMERGENCY DISPATCH CONTROL CENTER ===");
                     Console.WriteLine(m + $"Current Level: {TargetUserLevel}");
@@ -737,7 +737,52 @@ namespace Group5Project
         }
         static void Leaderboard()
         {
+            Console.Clear();
+            PrintDarkHeader();
 
+            string m = new string(' ', 28);
+
+            Console.WriteLine(m + "===== LEADERBOARD =====\n");
+
+            List<(string username, double rating)> players = new List<(string, double)>();
+
+            foreach (string user in UserInfo)
+            {
+                string[] parts = user.Split('|');
+
+                if (parts.Length >= 4)
+                {
+                    string username = parts[0];
+                    int level = int.Parse(parts[2]);
+                    int reputation = int.Parse(parts[3]);
+
+                    double rating = (level * 2) + (reputation / 20.0);
+
+                    if (rating > 10) rating = 10;
+
+                    players.Add((username, rating));
+                }
+            }
+
+            // Sort descending (highest first)
+            players = players.OrderByDescending(p => p.rating).ToList();
+
+            Console.WriteLine(m + "Rank   Player        Rating (0-10)");
+            Console.WriteLine(m + "-----------------------------------");
+
+            int rank = 1;
+
+            foreach (var player in players)
+            {
+                Console.WriteLine(m + $"{rank,-6} {player.username,-12} {player.rating:F1}/10");
+                rank++;
+
+                if (rank > 10) break; // Top 10 only
+            }
+
+            Console.WriteLine();
+            Console.WriteLine(m + "Press any key to return...");
+            Console.ReadKey();
         }
         static void Main(string[] args)
         {
@@ -804,10 +849,10 @@ namespace Group5Project
                     PrintDarkHeader();
                     Console.WriteLine(m + "[1] Load Game");
                     Console.WriteLine(m + "[2] New Game");
+                    Console.WriteLine(m + "[3] Leaderboard");
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine(m + "[3] Logout");
+                    Console.WriteLine(m + "[4] Logout");
                     Console.ResetColor();
-                    Console.WriteLine();
 
                     Console.Write(m + "Choice: ");
                     string Input = Console.ReadLine();
@@ -844,6 +889,9 @@ namespace Group5Project
                             NewGame();
                             break;
                         case 3:
+                            Leaderboard();
+                            break;
+                        case 4:
                             Console.Clear();
                             LoginMenu = true;
                             UserLogin = false;
