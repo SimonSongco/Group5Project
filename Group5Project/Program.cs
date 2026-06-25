@@ -327,10 +327,10 @@ namespace Group5Project
                 }
 
                 string[] UserParts = UserInfo[UserLineIndex].Split('|');
+                string m = new string(' ', 22);
 
                 if (TargetUserLevel > 5)
                 {
-                    string m = new string(' ', 22);
                     Console.WriteLine(m + "You Have Already Completed All The Levels!");
                     Thread.Sleep(1500);
                     Console.Clear();
@@ -378,6 +378,16 @@ namespace Group5Project
                 {
                     if (int.Parse(UserParts[2]) <= 1)
                     {
+                        string m2 = new string(' ', 19);
+                        Console.WriteLine("\n\n\n\n\n\n\n\n\n" + m2 + "[1] You must Dispatch the Best Unit for the Current Situation.");
+                        Console.WriteLine(m2 + "[2] You must Match the required Reputation each level.");
+                        Console.WriteLine(m2 + "[3] Each level increases required Reputation and decreases");
+                        Console.WriteLine(m2 + "[4] Rep gain if you succeed and increases Rep loss when you");
+                        Console.WriteLine(m2 + "[5] fail on a dispatch call.");
+                        Console.WriteLine();
+                        Console.WriteLine(m2 + "Press Enter to Continue to the Game.");
+                        Console.ReadKey();
+
                         for (int j = 0; j < 3; j++)
                         {
                             Console.Clear();
@@ -390,7 +400,6 @@ namespace Group5Project
                             Thread.Sleep(200);
                             Console.Write('.');
                             Thread.Sleep(200);
-
                         }
                     }
 
@@ -429,11 +438,12 @@ namespace Group5Project
                         case 5: gainAmount = 10; loseAmount = 40; break;
                     }
 
-                    string m = new string(' ', 22);
+                    
                     Console.Clear();
                     Console.WriteLine(m + "=== EMERGENCY DISPATCH CONTROL CENTER ===");
+                    Console.WriteLine(m + $"Current Level: {TargetUserLevel}");
                     Console.WriteLine(m + $"Active Emergencies Left: {CurrentDisasters.Count}");
-                    Console.Write(m + $"Current Reputation: ");
+                    Console.Write(m + "Current Reputation: ");
 
                     if (Reputation <= RequiredRep * .50)
                     {
@@ -603,7 +613,6 @@ namespace Group5Project
 
                 if (CurrentDisasters.Count == 0)
                 {
-                    string m = new string(' ', 22);
                     string[] parts = UserInfo[UserLineIndex].Split('|');
 
                     Console.Clear();
@@ -683,8 +692,8 @@ namespace Group5Project
 
                         if (TargetUserLevel > 5)
                         {
-                            Console.WriteLine(m + "YOU HAVE COMPLETED ALL LEVELS!");
                             PrintDarkHeader();
+                            Console.WriteLine($"{m}YOU HAVE COMPLETED ALL THE LEVELS {CurrentUser}!");
                             Console.WriteLine(new string(' ', 27) + "Press Any Key To Go To The Main Menu.");
                             Console.ReadKey();
 
@@ -725,6 +734,10 @@ namespace Group5Project
                     }
                 }
             }
+        }
+        static void Leaderboard()
+        {
+
         }
         static void Main(string[] args)
         {
