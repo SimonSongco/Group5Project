@@ -15,7 +15,7 @@ namespace Group5Project
         static List<string> PerPlayerDisasterInfo = new List<string>();
         static string CurrentUser = "";
         static int TargetUserLevel = 1;
-        static int Reputation = 40;
+        static int Reputation = 0;
 
         static void PrintDarkHeader()
         {
@@ -159,7 +159,7 @@ namespace Group5Project
                     Thread.Sleep(1000);
                     Console.Clear();
 
-                    string NewUserInfo = $"\n{InputUsername}|{InputPassword}|0|0";
+                    string NewUserInfo = $"\n{InputUsername}|{InputPassword}|0|0|0";
                     File.AppendAllText("User_Info.txt", NewUserInfo);
 
                     UserInfo = File.ReadAllLines("User_Info.txt").ToList();
@@ -227,12 +227,15 @@ namespace Group5Project
             string m2 = new string(' ', 29);
 
             int currentUserLevel = 0;
+            int accumulatedPoints = 0;
+
             for (int i = 0; i < UserInfo.Count; i++)
             {
                 string[] parts = UserInfo[i].Split('|');
                 if (parts[0] == CurrentUser)
                 {
                     currentUserLevel = int.Parse(parts[2]);
+                    if (parts.Length >= 5) int.TryParse(parts[4], out accumulatedPoints);
                     break;
                 }
             }
@@ -249,7 +252,7 @@ namespace Group5Project
                 PrintDarkHeader();
                 Console.WriteLine(m2 + "=== WARNING: START NEW GAME ===");
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(m + "This will overwrite your existing level and progress.");
+                Console.WriteLine(m + "This will overwrite your level but preserve accumulated points.");
                 Console.ResetColor();
                 Console.WriteLine();
                 Console.Write(m + "Are you sure you want to start a New Game? (Y/N): ");
@@ -276,7 +279,7 @@ namespace Group5Project
                     string[] parts = UserInfo[i].Split('|');
                     if (parts[0] == CurrentUser)
                     {
-                        string ResetUserLine = $"{parts[0]}|{parts[1]}|1|0";
+                        string ResetUserLine = $"{parts[0]}|{parts[1]}|1|0|{accumulatedPoints}";
                         UserInfo[i] = ResetUserLine;
                         break;
                     }
@@ -323,6 +326,7 @@ namespace Group5Project
                 List<string> CurrentDisasters = new List<string>();
                 int UserLineIndex = -1;
                 int StartingReputation = 0;
+                int TotalPoints = 0;
 
                 for (int i = 0; i < UserInfo.Count; i++)
                 {
@@ -331,6 +335,7 @@ namespace Group5Project
                     {
                         TargetUserLevel = int.Parse(parts[2]);
                         Reputation = int.Parse(parts[3]);
+                        if (parts.Length >= 5) int.TryParse(parts[4], out TotalPoints);
                         StartingReputation = Reputation;
                         UserLineIndex = i;
                         break;
@@ -348,7 +353,7 @@ namespace Group5Project
                     return;
                 }
 
-                if (UserParts.Length > 4)
+                if (UserParts.Length > 5)
                 {
                     for (int i = 0; i < 3; i++)
                     {
@@ -363,7 +368,7 @@ namespace Group5Project
                         Thread.Sleep(200);
                     }
 
-                    for (int i = 4; i < UserParts.Length; i++)
+                    for (int i = 5; i < UserParts.Length; i++)
                     {
                         string SavedDisasterID = UserParts[i].Trim();
                         string MatchedDisaster = null;
@@ -422,18 +427,20 @@ namespace Group5Project
                         GeneratedIDs.Add(disaster.Split('|')[0]);
                     }
 
-                    string updatedUserLine = UserInfo[UserLineIndex] + "|" + string.Join("|", GeneratedIDs);
+                    string updatedUserLine = $"{UserParts[0]}|{UserParts[1]}|{UserParts[2]}|{UserParts[3]}|{TotalPoints}|" + string.Join("|", GeneratedIDs);
                     UserInfo[UserLineIndex] = updatedUserLine;
 
                     File.WriteAllLines("User_Info.txt", UserInfo);
                 }
 
                 int RequiredRep = 100;
-
                 if (TargetUserLevel == 2) RequiredRep = 60;
                 else if (TargetUserLevel == 3) RequiredRep = 75;
                 else if (TargetUserLevel == 4) RequiredRep = 90;
                 else if (TargetUserLevel == 5) RequiredRep = 100;
+
+                int PointsGainedThisLevel = 0;
+                int DisastersSolvedThisLevel = 0;
 
                 while (CurrentDisasters.Count > 0)
                 {
@@ -449,10 +456,9 @@ namespace Group5Project
                         case 5: gainAmount = 10; loseAmount = 40; break;
                     }
 
-
                     Console.Clear();
                     Console.WriteLine(m + "=== EMERGENCY DISPATCH CONTROL CENTER ===");
-                    Console.WriteLine(m + $"Current Level: {TargetUserLevel}");
+                    Console.WriteLine(m + $"Current Level: {TargetUserLevel} | Points Earned So Far: {TotalPoints}");
                     Console.WriteLine(m + $"Active Emergencies Left: {CurrentDisasters.Count}");
                     Console.Write(m + "Current Reputation: ");
 
@@ -582,6 +588,9 @@ namespace Group5Project
                             Reputation += gainAmount;
                             if (Reputation > 100) Reputation = 100;
 
+                            PointsGainedThisLevel += TargetUserLevel;
+                            DisastersSolvedThisLevel++;
+
                             Console.ForegroundColor = ConsoleColor.Green;
                             Console.Write(m2 + "SUCCESS! ");
                             Console.ResetColor();
@@ -661,10 +670,12 @@ namespace Group5Project
 
                     if (Reputation >= RequiredRep)
                     {
+                        TotalPoints += PointsGainedThisLevel;
+
                         string[] currentUserParts = UserInfo[UserLineIndex].Split('|');
                         List<string> newlyUsedIDs = new List<string>();
 
-                        for (int i = 4; i < currentUserParts.Length; i++)
+                        for (int i = 5; i < currentUserParts.Length; i++)
                         {
                             newlyUsedIDs.Add(currentUserParts[i]);
                         }
@@ -693,7 +704,8 @@ namespace Group5Project
                         File.WriteAllLines("PerPlayer_Disaster_Info.txt", PerPlayerDisasterInfo);
 
                         TargetUserLevel++;
-                        string UpdatedUserLine = $"{parts[0]}|{parts[1]}|{TargetUserLevel}|{Reputation}";
+
+                        string UpdatedUserLine = $"{parts[0]}|{parts[1]}|{TargetUserLevel}|{Reputation}|{TotalPoints}";
                         UserInfo[UserLineIndex] = UpdatedUserLine;
                         File.WriteAllLines("User_Info.txt", UserInfo);
 
@@ -701,10 +713,16 @@ namespace Group5Project
                         Console.WriteLine(m + "PROMOTION SUCCESSFUL!");
                         Console.ResetColor();
 
+                        Console.WriteLine(m + $"Disasters Solved: {DisastersSolvedThisLevel}");
+                        Console.WriteLine(m + $"Points Earned: {PointsGainedThisLevel}");
+                        Console.WriteLine(m + $"Total Accumulated Points: {TotalPoints}");
+                        Console.WriteLine();
+
                         if (TargetUserLevel > 5)
                         {
                             PrintDarkHeader();
                             Console.WriteLine($"{m}YOU HAVE COMPLETED ALL THE LEVELS {CurrentUser}!");
+                            Console.WriteLine($"{m}Start a New Game to keep grinding for the Leaderboards!");
                             Console.WriteLine(new string(' ', 27) + "Press Any Key To Go To The Main Menu.");
                             Console.ReadKey();
 
@@ -716,7 +734,8 @@ namespace Group5Project
                     else
                     {
                         Reputation = StartingReputation;
-                        string UpdatedUserLine = $"{parts[0]}|{parts[1]}|{TargetUserLevel}|{Reputation}";
+
+                        string UpdatedUserLine = $"{parts[0]}|{parts[1]}|{TargetUserLevel}|{Reputation}|{TotalPoints}";
                         UserInfo[UserLineIndex] = UpdatedUserLine;
                         File.WriteAllLines("User_Info.txt", UserInfo);
 
@@ -755,36 +774,32 @@ namespace Group5Project
 
             Console.WriteLine(m + "===== LEADERBOARD =====\n");
 
-            List<(string username, double rating)> players = new List<(string, double)>();
+            List<(string username, int points)> players = new List<(string, int)>();
 
             foreach (string user in UserInfo)
             {
                 string[] parts = user.Split('|');
 
-                if (parts.Length >= 4)
+                if (parts.Length >= 5)
                 {
                     string username = parts[0];
-                    int level = int.Parse(parts[2]);
-                    int reputation = int.Parse(parts[3]);
+                    int points = 0;
+                    int.TryParse(parts[4], out points);
 
-                    double rating = (level * 2) + (reputation / 20.0);
-
-                    if (rating > 10) rating = 10;
-
-                    players.Add((username, rating));
+                    players.Add((username, points));
                 }
             }
 
-            players = players.OrderByDescending(p => p.rating).ToList();
+            players = players.OrderByDescending(p => p.points).ToList();
 
-            Console.WriteLine(m + "Rank   Player            Points    ");
-            Console.WriteLine(m + "-----------------------------------");
+            Console.WriteLine(m + "Rank   Player            Total Points ");
+            Console.WriteLine(m + "--------------------------------------");
 
             int rank = 1;
 
             foreach (var player in players)
             {
-                Console.WriteLine(m + $"{rank,-6} {player.username,-12} {player.rating:F1}");
+                Console.WriteLine(m + $"{rank,-6} {player.username,-17} {player.points}");
                 rank++;
 
                 if (rank > 10) break;
@@ -862,6 +877,7 @@ namespace Group5Project
                     Console.WriteLine(m + "[3] Leaderboard");
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(m + "[4] Logout");
+                    Console.WriteLine();
                     Console.ResetColor();
 
                     Console.Write(m + "Choice: ");
