@@ -412,7 +412,7 @@ namespace Group5Project
                     {
                         Console.Clear();
                         PrintDarkHeader();
-                        Console.Write(new string(' ', 33) + "Loading existing save");
+                        Console.Write(new string(' ', 58) + "Loading existing save");
                         Console.Write('.');
                         Thread.Sleep(200);
                         Console.Write('.');
@@ -461,7 +461,7 @@ namespace Group5Project
                         {
                             Console.Clear();
                             PrintDarkHeader();
-                            Console.Write(new string(' ', 34) + "Generating Disasters");
+                            Console.Write(new string(' ', 60) + "Generating Disasters");
                             Thread.Sleep(200);
                             Console.Write('.');
                             Thread.Sleep(200);
@@ -557,10 +557,9 @@ namespace Group5Project
                     {
                         for (int i = 0; i < 3; i++)
                         {
-                            string m2 = new string(' ', 60);
                             Console.Clear();
                             PrintDarkHeader();
-                            Console.Write(m2 + "Returning to Menu");
+                            Console.Write(new string(' ', 60) + "Returning to Menu");
                             Thread.Sleep(200);
                             Console.Write('.');
                             Thread.Sleep(200);
