@@ -17,24 +17,77 @@ namespace Group5Project
         static int TargetUserLevel = 1;
         static int Reputation = 0;
 
+        static void InitializeFiles()
+        {
+            if (!File.Exists("User_Info.txt")) File.Create("User_Info.txt").Close();
+            if (!File.Exists("PerPlayer_Disaster_Info.txt")) File.Create("PerPlayer_Disaster_Info.txt").Close();
+
+            if (!File.Exists("Disaster_Info.txt"))
+            {
+                string[] defaultDisasters =
+                {
+            "1|Minor Vehicular Collision|LOW|EDSA, Caloocan|Two-vehicle collision in northbound lane. Drivers engaged in a physical altercation on the shoulder.|1",
+            "2|Community Heat Exhaustion|LOW|Quezon Circle, QC|Outdoor community event experiencing multiple cases of mild heat exhaustion due to peak temperatures.|3",
+            "3|Civil Disturbance|MED|Poblacion, Makati|An aggressive crowd has gathered outside a commercial facility throwing heavy debris at windows.|1",
+            "4|Localized Chemical Spill|MED|Industrial Park, Valenzuela|Forklift punctured a 50-gallon drum containing highly flammable industrial solvent.|2",
+            "5|Multi-Story Structure Fire|HIGH|Commonwealth, QC|Level-3 fire breaking out across a residential apartment block. Multiple families trapped.|2",
+            "6|Subway Station Power Outage|LOW|Shaw Boulevard, Mandaluyong|Massive underground transit hub drops to total darkness. Commuters panic and crowd bottlenecks form near closed turnstiles.|1",
+            "7|Commercial Gas Line Rupture|HIGH|Bonifacio Global City, Taguig|An excavator tore a main gas line behind a strip mall. Heavy vapor plume detected near local restaurant kitchens.|2",
+            "8|Construction Scaffolding Collapse|MED|Ortigas Center, Pasig|Iron framework collapsed down the side of a 10-story site. Pedestrians are pinned under light twisted metal on the sidewalk.|4",
+            "9|Bank Vault Alarm Trigger|LOW|Binondo, Manila|Silent panic alarm tripped at a financial branch during off-hours. Motion sensors show activity moving in the basement storage.|1",
+            "10|Informal Settlement Flooding|HIGH|Marikina Heights, Marikina|Riverbanks overflowed rapidly during a cloudburst. Flash floods reached waist-deep inside narrow alleys, forcing residents onto tin roofs.|4",
+            "11|Food Poisoning Incident|LOW|Divisoria, Manila|Multiple street vendors and shoppers fainting and vomiting near a crowded market block after eating a bad batch of seafood.|3",
+            "12|Lithium Battery Warehouse Smoke|MED|FTI, Taguig|Thick, acrid metallic white smoke rolling out from a pallet of stored electronics. Staff evacuated safely but the smoke is thickening.|2",
+            "13|VIP Convoy Stand-off|MED|Roxas Boulevard, Pasay|An armed individual blocked a foreign diplomat's vehicle in the middle of the road, screaming threats while keeping one hand inside a jacket.|1",
+            "14|High-Rise Elevator Entrapment|LOW|Ayala Avenue, Makati|A sudden voltage surge snapped a mechanical cable, leaving an office elevator car jammed awkwardly between the 22nd and 23rd floors.|4",
+            "15|Marathon Heat Syncope|LOW|Bay City, Parañaque|A midday corporate fun run results in a sudden wave of dozens of amateur runners collapsing near the finish line from muscle cramps.|3",
+            "16|Laboratory Chemical Spill|MED|UP Campus, Quezon City|A graduate student dropped a glass jug of volatile acid in a closed basement lab. Fumes are causing respiratory irritation through the vents.|2",
+            "17|Cargo Ship Dock Collision|MED|Port Area, Manila|A container barge rammed a concrete pier crane. A worker fell off the platform onto an unstable pile of wooden shipping crates below.|4",
+            "18|Crowded Concert Heat Surge|LOW|Araneta Coliseum, QC|Fans near the front barricade of a packed indoor concert are passing out and experiencing dizziness due to a temporary AC failure.|3",
+            "19|Labor Strike Escalation|MED|Special Economic Zone, Cavite|Picketing workers have blocked all entry gates, slashing factory delivery truck tires and physically preventing managers from exiting.|1",
+            "20|Chemical Plant Gas Leak|HIGH|Pasig City|A pressurized valve ruptured at a chemical processing plant, releasing a toxic cloud over the immediate industrial zone.|2",
+            "21|Jewelry Store Hostage Situation|HIGH|Greenhills, San Juan|Armed individuals locked themselves in a commercial store with multiple employees held at gunpoint.|1",
+            "22|Factory Boiler Explosion|HIGH|Meycauayan, Bulacan|A massive explosion triggered a structural fire in a garment factory. Intense flames spreading rapidly.|2",
+            "23|Highway Pile-up Extrication|HIGH|NLEX, Valenzuela|Multiple vehicles crushed under a flipped semi-trailer. Victims are heavily trapped inside mangled cars.|4",
+            "24|School Mass Fainting|LOW|Sampaloc, Manila|Dozens of students are hyperventilating and passing out during an extended morning assembly under the hot sun.|3",
+            "25|Cybercafe Brawl|LOW|Cubao, Quezon City|Two rival gaming groups have started throwing chairs and monitors at each other, destroying property.|1",
+            "26|Abandoned Warehouse Blaze|MED|Tondo, Manila|An old wooden warehouse caught fire. Embers are threatening to spread to the nearby residential shanties.|2",
+            "27|Mountain Trail Landslide|MED|Antipolo, Rizal|Hikers are stranded and partially buried by heavy mud and debris after a sudden intense rainstorm.|4",
+            "28|Food Court Allergic Outbreak|LOW|Megamall, Mandaluyong|Several patrons are exhibiting severe anaphylactic shock and breathing issues after consuming contaminated sauce.|3",
+            "29|Prison Block Riot|HIGH|Muntinlupa City|Inmates have breached their cell block barricades and are aggressively confronting facility guards.|1",
+            "30|Overturned Fuel Tanker|HIGH|C-5 Road, Pasig|A tanker flipped, spilling thousands of liters of gasoline across all lanes. Extremely high risk of ignition.|2",
+            "31|Ferris Wheel Malfunction|MED|Bay City, Pasay|A severe mechanical failure has left multiple families stuck high in the air inside violently swinging gondolas.|4",
+            "32|Senior Center Dehydration|MED|San Juan City|A broken water main during a heatwave has left elderly residents experiencing acute heat illness and severe dehydration.|3",
+            "33|Illegal Street Racing Crash|MED|Macapagal Blvd, Pasay|Drag racers crashed into a barrier. Unruly crowds are interfering and getting aggressive with bystanders.|1",
+            "34|Transformer Pole Fire|LOW|Poblacion, Makati|A sparking electrical transformer ignited adjacent tree branches, dropping burning embers onto parked vehicles.|2",
+            "35|Construction Trench Collapse|HIGH|BGC, Taguig|Water pipe workers are buried up to their necks in heavy, wet dirt after the trench shoring walls suddenly gave way.|4",
+            "36|Office Carbon Monoxide Leak|MED|Eastwood City, QC|Employees in a basement office are complaining of severe dizziness, nausea, and fainting due to a generator exhaust leak.|3",
+            "37|Flash Mob Mall Looting|MED|Ayala Center, Makati|A coordinated group of thieves is aggressively sweeping through luxury boutiques, smashing display glass and shoving security.|1",
+            "38|Restaurant Kitchen Grease Fire|LOW|Tomas Morato, QC|A commercial deep fryer flared out of control, with flames rapidly spreading to the exhaust hood and ceiling panels.|2",
+            "39|Cave Exploration Incident|HIGH|Montalban, Rizal|Amateur spelunkers fell into a deep crevasse. One has a suspected spinal injury and requires technical vertical extraction.|4",
+            "40|Pool Chlorine Gas Exposure|MED|Parañaque City|A pump room malfunction released a cloud of chlorine gas. Swimmers are suffering from severe eye irritation and shortness of breath.|3"
+        };
+                File.WriteAllLines("Disaster_Info.txt", defaultDisasters);
+            }
+        }
         static void PrintDarkHeader()
         {
             string header1 = "\n" +
-            "\t      ██████╗ ██╗   ██╗████████╗██████╗ ██████╗ ███████╗ █████╗ ██╗  ██╗\n" +
-            "\t     ██╔═══██╗██║   ██║╚══██╔══╝██╔══██╗██╔══██╗██╔════╝██╔══██╗██║ ██╔╝\n" +
-            "\t     ██║   ██║██║   ██║   ██║   ██████╔╝██████╔╝█████╗  ███████║█████╔╝ \n" +
-            "\t     ██║   ██║██║   ██║   ██║   ██╔══██╗██╔══██╗██╔══╝  ██╔══██║██╔═██╗ \n" +
-            "\t     ╚██████╔╝╚██████╔╝   ██║   ██████╔╝██║  ██║███████╗██║  ██║██║  ██╗\n" +
-            "\t      ╚═════╝  ╚═════╝    ╚═╝   ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝  " +
+            "\t                               ██████╗ ██╗   ██╗████████╗██████╗ ██████╗ ███████╗ █████╗ ██╗  ██╗\n" +
+            "\t                              ██╔═══██╗██║   ██║╚══██╔══╝██╔══██╗██╔══██╗██╔════╝██╔══██╗██║ ██╔╝\n" +
+            "\t                              ██║   ██║██║   ██║   ██║   ██████╔╝██████╔╝█████╗  ███████║█████╔╝ \n" +
+            "\t                              ██║   ██║██║   ██║   ██║   ██╔══██╗██╔══██╗██╔══╝  ██╔══██║██╔═██╗ \n" +
+            "\t                              ╚██████╔╝╚██████╔╝   ██║   ██████╔╝██║  ██║███████╗██║  ██║██║  ██╗\n" +
+            "\t                               ╚═════╝  ╚═════╝    ╚═╝   ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝  " +
             " ";
 
             string header2 = "" +
-            "                            ███████╗███████╗██████╗  ██████╗                        \n" +
-            "                            ╚══███╔╝██╔════╝██╔══██╗██╔═══██╗                       \n" +
-            "                              ███╔╝ █████╗  ██████╔╝██║   ██║                       \n" +
-            "                             ███╔╝  ██╔══╝  ██╔══██╗██║   ██║                       \n" +
-            "                            ███████╗███████╗██║  ██║╚██████╔╝                       \n" +
-            "                            ╚══════╝╚══════╝╚═╝  ╚═╝ ╚═════╝                        \n" +
+            "                                                     ███████╗███████╗██████╗  ██████╗                        \n" +
+            "                                                     ╚══███╔╝██╔════╝██╔══██╗██╔═══██╗                       \n" +
+            "                                                       ███╔╝ █████╗  ██████╔╝██║   ██║                       \n" +
+            "                                                      ███╔╝  ██╔══╝  ██╔══██╗██║   ██║                       \n" +
+            "                                                     ███████╗███████╗██║  ██║╚██████╔╝                       \n" +
+            "                                                     ╚══════╝╚══════╝╚═╝  ╚═╝ ╚═════╝                        \n" +
             " ";
 
             Console.ForegroundColor = ConsoleColor.White;
@@ -46,7 +99,7 @@ namespace Group5Project
         }
         static (string, bool, bool) Login(bool UserLogin, bool LoginMenu)
         {
-            string m = new string(' ', 31);
+            string m = new string(' ', 56);
 
             while (true)
             {
@@ -75,7 +128,7 @@ namespace Group5Project
                         {
                             Console.Clear();
                             PrintDarkHeader();
-                            Console.Write(new string(' ', 39) + "Logging In");
+                            Console.Write(m + "      " + "Logging In");
                             Thread.Sleep(200);
                             Console.Write('.');
                             Thread.Sleep(200);
@@ -97,7 +150,7 @@ namespace Group5Project
         }
         static void Register()
         {
-            string m = new string(' ', 31);
+            string m = new string(' ', 56);
 
             while (true)
             {
@@ -223,8 +276,8 @@ namespace Group5Project
         }
         static void NewGame()
         {
-            string m = new string(' ', 20);
-            string m2 = new string(' ', 29);
+            string m = new string(' ', 40);
+            string m2 = new string(' ', 54);
 
             int currentUserLevel = 0;
             int accumulatedPoints = 0;
@@ -304,11 +357,11 @@ namespace Group5Project
                 {
                     Console.Clear();
                     PrintDarkHeader();
-                    Console.WriteLine(m + "       Starting First Game! Loading Level 1.");
+                    Console.WriteLine(m2 + "Starting First Game! Loading Level 1.");
                 }
                 else
                 {
-                    Console.WriteLine(m + "          Progress Reset! Loading Level 1.");
+                    Console.WriteLine(m2 + "Progress Reset! Loading Level 1.");
                 }
 
                 Thread.Sleep(1000);
@@ -343,7 +396,7 @@ namespace Group5Project
                 }
 
                 string[] UserParts = UserInfo[UserLineIndex].Split('|');
-                string m = new string(' ', 22);
+                string m = new string(' ', 50);
 
                 if (TargetUserLevel > 5)
                 {
@@ -394,7 +447,7 @@ namespace Group5Project
                 {
                     if (int.Parse(UserParts[2]) <= 1)
                     {
-                        string m2 = new string(' ', 19);
+                        string m2 = new string(' ', 38);
                         Console.WriteLine("\n\n\n\n\n\n\n\n\n" + m2 + "[1] You must Dispatch the Best Unit for the Current Situation.");
                         Console.WriteLine(m2 + "[2] You must Match the required Reputation each level.");
                         Console.WriteLine(m2 + "[3] Each level increases required Reputation and decreases");
@@ -504,7 +557,7 @@ namespace Group5Project
                     {
                         for (int i = 0; i < 3; i++)
                         {
-                            string m2 = new string(' ', 36);
+                            string m2 = new string(' ', 60);
                             Console.Clear();
                             PrintDarkHeader();
                             Console.Write(m2 + "Returning to Menu");
@@ -526,7 +579,7 @@ namespace Group5Project
                         string[] chosenParts = ChosenDisaster.Split('|');
                         bool SelectionValid = true;
                         string UnitChoice = "";
-                        string m2 = new string(' ', 18);
+                        string m2 = new string(' ', 38);
 
                         while (SelectionValid)
                         {
@@ -758,7 +811,7 @@ namespace Group5Project
                     {
                         Console.Clear();
                         PrintDarkHeader();
-                        Console.WriteLine(new string(' ', 31) + "Returning to Menu.");
+                        Console.WriteLine(m + "Returning to Menu.");
                         Thread.Sleep(1000);
                         Game = false;
                     }
@@ -770,9 +823,9 @@ namespace Group5Project
             Console.Clear();
             PrintDarkHeader();
 
-            string m = new string(' ', 28);
+            string m = new string(' ', 50);
 
-            Console.WriteLine(m + "===== LEADERBOARD =====\n");
+            Console.WriteLine(m + "         ===== LEADERBOARD =====\n");
 
             List<(string username, int points)> players = new List<(string, int)>();
 
@@ -811,9 +864,7 @@ namespace Group5Project
         }
         static void Main(string[] args)
         {
-            if (!File.Exists("User_Info.txt")) File.Create("User_Info.txt").Close();
-            if (!File.Exists("Disaster_Info.txt")) File.Create("Disaster_Info.txt").Close();
-            if (!File.Exists("PerPlayer_Disaster_Info.txt")) File.Create("PerPlayer_Disaster_Info.txt").Close();
+            InitializeFiles();
 
             UserInfo = File.ReadAllLines("User_Info.txt").ToList();
             DisasterInfo = File.ReadAllLines("Disaster_Info.txt").ToList();
@@ -823,7 +874,7 @@ namespace Group5Project
             bool UserLogin = false;
             bool Menu = true;
 
-            string m = new string(' ', 38);
+            string m = new string(' ', 63);
 
             while (Menu)
             {
@@ -902,7 +953,7 @@ namespace Group5Project
                             if (checkLevel == 0)
                             {
                                 Console.WriteLine();
-                                Console.WriteLine(new string(' ', 22) + "No save data found. Please start a New Game!");
+                                Console.WriteLine(new string(' ', 47) + "No save data found. Please start a New Game!");
                                 Thread.Sleep(1500);
                             }
                             else
