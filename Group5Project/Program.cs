@@ -412,8 +412,10 @@ namespace Group5Project
 
                 if (TargetUserLevel > 5)
                 {
+                    PrintDarkHeader();
                     Console.WriteLine(m + "You Have Already Completed All The Levels!");
-                    Thread.Sleep(1500);
+                    Console.WriteLine(m + "You Can Start Over By Pressing New Game!");
+                    Thread.Sleep(2000);
                     Console.Clear();
                     return;
                 }
@@ -785,10 +787,14 @@ namespace Group5Project
 
                         if (TargetUserLevel > 5)
                         {
+                            Console.WriteLine(m + "Press Any Key To Continue.");
+                            Console.ReadKey();
+                            Console.Clear();
                             PrintDarkHeader();
-                            Console.WriteLine($"{m}YOU HAVE COMPLETED ALL THE LEVELS {CurrentUser}!");
-                            Console.WriteLine($"{m}Start a New Game to keep grinding for the Leaderboards!");
-                            Console.WriteLine(new string(' ', 27) + "Press Any Key To Go To The Main Menu.");
+                            Console.WriteLine(m + $"YOU HAVE COMPLETED ALL THE LEVELS {CurrentUser}!");
+                            Console.WriteLine(m + "Start a New Game to keep grinding for the Leaderboards!");
+                            Console.WriteLine();
+                            Console.WriteLine(m + "Press Any Key To Go To The Main Menu.");
                             Console.ReadKey();
 
                             return;
