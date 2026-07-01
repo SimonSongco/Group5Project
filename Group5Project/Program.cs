@@ -151,6 +151,7 @@ namespace Group5Project
         static void Register()
         {
             string m = new string(' ', 56);
+            string m2 = new string(' ', 42);
 
             while (true)
             {
@@ -161,12 +162,9 @@ namespace Group5Project
                 Console.WriteLine(m + "     ACCOUNT REGISTER     ");
                 Console.WriteLine(m + "--------------------------");
                 Console.ResetColor();
-                Console.WriteLine(m + "  Press Enter to Go Back  ");
                 Console.WriteLine();
                 Console.Write(m + "Username: ");
                 string InputUsername = Console.ReadLine();
-
-                if (InputUsername == "") return;
 
                 for (int i = 0; i < UserInfo.Count; i++)
                 {
@@ -208,15 +206,29 @@ namespace Group5Project
 
                 if (InputPassword == InputConfirmPassword)
                 {
-                    Console.WriteLine(m + "Account Created!");
-                    Thread.Sleep(1000);
-                    Console.Clear();
+                    Console.WriteLine(m2 + "Are you sure you want to create a new Account? (Y/N)");
+                    Console.Write(m + "Choice: ");
+                    string NewAccount = Console.ReadLine();
 
-                    string NewUserInfo = $"\n{InputUsername}|{InputPassword}|0|0|0";
-                    File.AppendAllText("User_Info.txt", NewUserInfo);
+                    if (NewAccount.ToUpper() == "Y")
+                    {
+                        Console.Clear();
+                        PrintDarkHeader();
+                        Console.WriteLine(m + "     Account Created!");
+                        Thread.Sleep(1000);
+                        Console.Clear();
 
-                    UserInfo = File.ReadAllLines("User_Info.txt").ToList();
-                    return;
+                        string NewUserInfo = $"\n{InputUsername}|{InputPassword}|0|0|0";
+                        File.AppendAllText("User_Info.txt", NewUserInfo);
+
+                        UserInfo = File.ReadAllLines("User_Info.txt").ToList();
+                        return;
+                    }
+                    else if (NewAccount.ToUpper() == "N")
+                    {
+                        Console.Clear();
+                        return;
+                    }
                 }
                 else
                 {
@@ -447,12 +459,13 @@ namespace Group5Project
                 {
                     if (int.Parse(UserParts[2]) <= 1)
                     {
+                        Console.Clear();
                         string m2 = new string(' ', 38);
-                        Console.WriteLine("\n\n\n\n\n\n\n\n\n" + m2 + "[1] You must Dispatch the Best Unit for the Current Situation.");
+                        Console.WriteLine("\n\n\n\n\n\n\n\n\n\n\n" + m2 + "[1] You must Dispatch the Best Unit for the Current Situation.");
                         Console.WriteLine(m2 + "[2] You must Match the required Reputation each level.");
                         Console.WriteLine(m2 + "[3] Each level increases required Reputation and decreases");
-                        Console.WriteLine(m2 + "[4] Rep gain if you succeed and increases Rep loss when you");
-                        Console.WriteLine(m2 + "[5] fail on a dispatch call.");
+                        Console.WriteLine(m2 + "    Rep gain if you succeed and increases Rep loss when you");
+                        Console.WriteLine(m2 + "    fail on a dispatch call.");
                         Console.WriteLine();
                         Console.WriteLine(m2 + "Press Enter to Continue to the Game.");
                         Console.ReadKey();
@@ -810,8 +823,18 @@ namespace Group5Project
                     {
                         Console.Clear();
                         PrintDarkHeader();
-                        Console.WriteLine(m + "Returning to Menu.");
-                        Thread.Sleep(1000);
+                        for (int i = 0; i < 3; i++)
+                        {
+                            Console.Clear();
+                            PrintDarkHeader();
+                            Console.Write(new string(' ', 60) + "Returning to Menu");
+                            Thread.Sleep(200);
+                            Console.Write('.');
+                            Thread.Sleep(200);
+                            Console.Write('.');
+                            Thread.Sleep(200);
+                            Console.Write('.');
+                        }
                         Game = false;
                     }
                 }
