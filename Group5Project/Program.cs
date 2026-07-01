@@ -250,7 +250,8 @@ namespace Group5Project
             else if (UserLevel == 5) MaxDisasters = 10;
 
             List<string> previouslyUsedIDs = new List<string>();
-            foreach (string line in PerPlayerDisasterInfo)
+
+            foreach (string line in PerPlayerDisasterInfo) //Adds Used Disasters that Player already has completed to a List
             {
                 string[] parts = line.Split('|');
                 if (parts[0] == CurrentUser)
@@ -265,11 +266,12 @@ namespace Group5Project
 
             int availableDisasters = DisasterInfo.Count - previouslyUsedIDs.Count;
             if (MaxDisasters > availableDisasters) MaxDisasters = availableDisasters;
+            // If there are no more disasters, only get the remaining disasters
 
             Random random = new Random();
             List<int> UsedIndexes = new List<int>();
 
-            for (int i = 0; i < MaxDisasters; i++)
+            for (int i = 0; i < MaxDisasters; i++) //Picks which disasters
             {
                 int randomIndex;
                 string newDisasterID;
@@ -278,7 +280,8 @@ namespace Group5Project
                     randomIndex = random.Next(0, DisasterInfo.Count);
                     newDisasterID = DisasterInfo[randomIndex].Split('|')[0];
                 }
-                while (UsedIndexes.Contains(randomIndex) || previouslyUsedIDs.Contains(newDisasterID));
+                while (UsedIndexes.Contains(randomIndex) || previouslyUsedIDs.Contains(newDisasterID)); 
+                //Checks if Already Chosen or Completed
 
                 UsedIndexes.Add(randomIndex);
                 CurrentDisasters.Add(DisasterInfo[randomIndex]);
@@ -294,7 +297,7 @@ namespace Group5Project
             int currentUserLevel = 0;
             int accumulatedPoints = 0;
 
-            for (int i = 0; i < UserInfo.Count; i++)
+            for (int i = 0; i < UserInfo.Count; i++) //Checks User's Saved level and points
             {
                 string[] parts = UserInfo[i].Split('|');
                 if (parts[0] == CurrentUser)
@@ -337,9 +340,9 @@ namespace Group5Project
                 }
             }
 
-            if (proceedWithNewGame)
+            if (proceedWithNewGame) //If Player Resets or Is New to the Game
             {
-                for (int i = 0; i < UserInfo.Count; i++)
+                for (int i = 0; i < UserInfo.Count; i++) //Resets Player Stats
                 {
                     string[] parts = UserInfo[i].Split('|');
                     if (parts[0] == CurrentUser)
@@ -351,7 +354,7 @@ namespace Group5Project
                 }
                 File.WriteAllLines("User_Info.txt", UserInfo);
 
-                for (int i = 0; i < PerPlayerDisasterInfo.Count; i++)
+                for (int i = 0; i < PerPlayerDisasterInfo.Count; i++) //Resets Completed Disasters
                 {
                     if (PerPlayerDisasterInfo[i].Split('|')[0] == CurrentUser)
                     {
@@ -393,7 +396,7 @@ namespace Group5Project
                 int StartingReputation = 0;
                 int TotalPoints = 0;
 
-                for (int i = 0; i < UserInfo.Count; i++)
+                for (int i = 0; i < UserInfo.Count; i++) //Loads Saved Player Data to Current Game
                 {
                     string[] parts = UserInfo[i].Split('|');
                     if (parts[0] == CurrentUser)
@@ -401,8 +404,8 @@ namespace Group5Project
                         TargetUserLevel = int.Parse(parts[2]);
                         Reputation = int.Parse(parts[3]);
                         if (parts.Length >= 5) int.TryParse(parts[4], out TotalPoints);
-                        StartingReputation = Reputation;
-                        UserLineIndex = i;
+                        StartingReputation = Reputation; //Saves Backup Rep incase player Fails
+                        UserLineIndex = i; //To Know Which index Player Save Is in TXT file
                         break;
                     }
                 }
@@ -435,7 +438,7 @@ namespace Group5Project
                         Thread.Sleep(200);
                     }
 
-                    for (int i = 5; i < UserParts.Length; i++)
+                    for (int i = 5; i < UserParts.Length; i++) //Loads Saved Disasters on Current Users Saved Line
                     {
                         string SavedDisasterID = UserParts[i].Trim();
                         string MatchedDisaster = null;
@@ -451,7 +454,7 @@ namespace Group5Project
                             }
                         }
 
-                        if (MatchedDisaster != null)
+                        if (MatchedDisaster != null) //If Disaster ID found on User's Info, Add to Current Disasters
                         {
                             CurrentDisasters.Add(MatchedDisaster);
                         }
@@ -489,7 +492,7 @@ namespace Group5Project
 
                     CurrentDisasters = DisasterGenerator(CurrentDisasters, TargetUserLevel);
 
-                    List<string> GeneratedIDs = new List<string>();
+                    List<string> GeneratedIDs = new List<string>(); //Adds new sets of Disasters for the Player, Saved it Into the File
                     foreach (string disaster in CurrentDisasters)
                     {
                         GeneratedIDs.Add(disaster.Split('|')[0]);
@@ -506,6 +509,7 @@ namespace Group5Project
                 else if (TargetUserLevel == 3) RequiredRep = 75;
                 else if (TargetUserLevel == 4) RequiredRep = 90;
                 else if (TargetUserLevel == 5) RequiredRep = 100;
+                //Reputation Per Level
 
                 int PointsGainedThisLevel = 0;
                 int DisastersSolvedThisLevel = 0;
@@ -522,6 +526,7 @@ namespace Group5Project
                         case 3: gainAmount = 20; loseAmount = 25; break;
                         case 4: gainAmount = 15; loseAmount = 35; break;
                         case 5: gainAmount = 10; loseAmount = 40; break;
+                        //Reputation Gain and Loss Amount per Level
                     }
 
                     Console.Clear();
@@ -603,9 +608,9 @@ namespace Group5Project
                             string[] words = chosenParts[4].Split(' ');
 
                             string currentLine = "";
-                            int maxLen = 50;
+                            int maxLen = 50; //Max Characters for Each Line in Description
 
-                            foreach (string word in words)
+                            foreach (string word in words) //Goes to next Line when Exceed 50 Characters
                             {
                                 if ((currentLine + word).Length > maxLen)
                                 {
@@ -650,10 +655,10 @@ namespace Group5Project
                         int correctIndex = int.Parse(CorrectUnit) - 1;
                         string CorrectUnitNames = UnitNames[correctIndex];
 
-                        if (UnitChoice == CorrectUnit)
+                        if (UnitChoice == CorrectUnit) //If Unit Chosen is Correct According to DisasterInfo File
                         {
                             Reputation += gainAmount;
-                            if (Reputation > 100) Reputation = 100;
+                            if (Reputation > 100) Reputation = 100; //Reputation Cannot Exceed 100
 
                             PointsGainedThisLevel += TargetUserLevel;
                             DisastersSolvedThisLevel++;
@@ -669,10 +674,10 @@ namespace Group5Project
 
                             CurrentDisasters.RemoveAt(choice - 1);
                         }
-                        else
+                        else //If Unit Chosen is Wrong According to DisasterInfo File
                         {
                             Reputation -= loseAmount;
-                            if (Reputation < 0) Reputation = 0;
+                            if (Reputation < 0) Reputation = 0; //Reputation Cannot Be Less than 0
 
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.Write(m2 + "FAILURE! ");
@@ -698,7 +703,7 @@ namespace Group5Project
                     }
                 }
 
-                if (CurrentDisasters.Count == 0)
+                if (CurrentDisasters.Count == 0) //If Player Completed All Disasters Given
                 {
                     string[] parts = UserInfo[UserLineIndex].Split('|');
 
@@ -735,14 +740,14 @@ namespace Group5Project
 
                     Console.WriteLine();
 
-                    if (Reputation >= RequiredRep)
+                    if (Reputation >= RequiredRep) //Checks if Current Reputation is Above Required Reputation
                     {
                         TotalPoints += PointsGainedThisLevel;
 
                         string[] currentUserParts = UserInfo[UserLineIndex].Split('|');
                         List<string> newlyUsedIDs = new List<string>();
 
-                        for (int i = 5; i < currentUserParts.Length; i++)
+                        for (int i = 5; i < currentUserParts.Length; i++) //Adds Disaster ID to not Repeat when Generating New Ones
                         {
                             newlyUsedIDs.Add(currentUserParts[i]);
                         }
@@ -757,7 +762,7 @@ namespace Group5Project
                             }
                         }
 
-                        if (playerRecordIndex != -1)
+                        if (playerRecordIndex != -1) //Adds Completed Disasters and Records it in PerPlayerDisasterInfo
                         {
                             if (newlyUsedIDs.Count > 0)
                                 PerPlayerDisasterInfo[playerRecordIndex] += "|" + string.Join("|", newlyUsedIDs);
@@ -774,7 +779,7 @@ namespace Group5Project
 
                         string UpdatedUserLine = $"{parts[0]}|{parts[1]}|{TargetUserLevel}|{Reputation}|{TotalPoints}";
                         UserInfo[UserLineIndex] = UpdatedUserLine;
-                        File.WriteAllLines("User_Info.txt", UserInfo);
+                        File.WriteAllLines("User_Info.txt", UserInfo); //Updates Info in TXT File
 
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine(m + "PROMOTION SUCCESSFUL!");
@@ -869,16 +874,16 @@ namespace Group5Project
 
                     players.Add((username, points));
                 }
-            }
+            } //Extracts Points and Usernames
 
-            players = players.OrderByDescending(p => p.points).ToList();
+            players = players.OrderByDescending(p => p.points).ToList(); //Orders Them By Highest Points
 
             Console.WriteLine(m + "Rank   Player            Total Points ");
             Console.WriteLine(m + "--------------------------------------");
 
             int rank = 1;
 
-            foreach (var player in players)
+            foreach (var player in players) //Displays Them
             {
                 Console.WriteLine(m + $"{rank,-6} {player.username,-17} {player.points}");
                 rank++;
